@@ -4,12 +4,15 @@
  * DATE: 14.06.2021
  * PURPOSE:
  */
+/* #include <windows.h> */
+#include <time.h>
 #include <windows.h>
-#include <math.h>
+
 #include "globe.h"
 
 #define WND_CLASS_NAME "SomeThing"
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam );
+/* FlipFullScreen( HWND hWnd ); */
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, INT ShowCmd)
 {
   WNDCLASS wc;
@@ -85,20 +88,23 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
 
     SelectObject(hDCFrame, hBmFrame);
 
-    GlobeSet(w / 2, h / 2, (w < h ? w : h) * 0.8);
+    GlobeSet(w , h , 1.0);
     
     SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
 
   case WM_TIMER:
 
+    /* Draw background */
     SelectObject(hDCFrame, GetStockObject(NULL_PEN));
     SelectObject(hDCFrame, GetStockObject(DC_BRUSH));
-
-    SetDCBrushColor(hDCFrame, RGB(200, 255, 255));
+    SetDCBrushColor(hDCFrame, RGB(200, 230, 220));
     Rectangle(hDCFrame, 0, 0, w, h);
 
-    GlobeDraw(hDC);
+    /* Draw sphere */
+    SelectObject(hDCFrame, GetStockObject(DC_PEN));
+    SetDCPenColor(hDCFrame, RGB(255, 0, 0));
+    GlobeDraw(hDCFrame);
 
     InvalidateRect(hWnd, NULL, FALSE);
 
@@ -114,6 +120,23 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     EndPaint(hWnd, &ps);
     return 0;
 
+/*
+  case WM_GETMINMAXINFO:
+    ((MINMAXINFO *)lParam)->ptMaxTrackSize.y =
+      GetSystemMetrics(SM_CYMAXTRACK) + GetSystemMetrics(SM_CYCAPTION) + 2 * GetSystemMetrics(SM_CYBORDER);
+    return 0;
+
+  case WM_KEYDOWN:
+    if (wParam == VK_ESCAPE)
+      SendMessage(hWnd, WM_CLOSE, 0, 0);
+    return 0;
+
+  case WM_SYSKEYDOWN:
+    if (wParam == VK_RETURN)
+      FlipFullScreen(hWnd);
+    return 0;
+*/
+
   case WM_DESTROY:
     if (hBmFrame != NULL)
       DeleteObject(hBmFrame);
@@ -124,3 +147,56 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 }
+
+#if 0
+/* Toggle window fullscreen mode function.
+ * ARGUMENTS:
+ *   - window handle:
+ *       HWND hWnd;
+ * RETURNS: None.
+ */
+VOID FlipFullScreen( HWND hWnd )
+{
+  static BOOL IsFullScreen = FALSE;
+  static RECT SaveRect;
+
+  if (!IsFullScreen)
+  {
+    HMONITOR hmon;
+    MONITORINFO moninfo;
+    RECT rc;
+
+    IsFullScreen = TRUE;
+
+    /* Goto fullscreen mode */
+
+    /* Store current window size and position */
+    GetWindowRect(hWnd, &SaveRect);
+
+    /* Get nearest monitor */
+    hmon = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+
+    /* Get monitor information */
+    moninfo.cbSize = sizeof(MONITORINFO);
+    GetMonitorInfo(hmon, &moninfo);
+
+    rc = moninfo.rcMonitor;
+    AdjustWindowRect(&rc, GetWindowLong(hWnd, GWL_STYLE), FALSE);
+
+    SetWindowPos(hWnd, HWND_TOP,
+      rc.left, rc.top,
+      rc.right - rc.left, rc.bottom - rc.top,
+      SWP_NOOWNERZORDER);
+  }
+  else
+  {
+    IsFullScreen = FALSE;
+
+    /* Restore window size and position */
+    SetWindowPos(hWnd, HWND_TOP,
+      SaveRect.left, SaveRect.top,
+      SaveRect.right - SaveRect.left, SaveRect.bottom - SaveRect.top,
+      SWP_NOOWNERZORDER);
+  }
+} /* End of 'FlipFullScreen' function */
+#endif
