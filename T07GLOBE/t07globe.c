@@ -1,18 +1,19 @@
 /*
- * FILENAME: T07GLOBE
+ * FILENAME: t07globe
  * PRAGRAMMER: DS6
  * DATE: 14.06.2021
  * PURPOSE:
  */
 /* #include <windows.h> */
 #include <time.h>
+#include <stdio.h>
 #include <windows.h>
 
 #include "globe.h"
 
 #define WND_CLASS_NAME "SomeThing"
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam );
-/* FlipFullScreen( HWND hWnd ); */
+VOID FlipFullScreen( HWND hWnd );
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, INT ShowCmd)
 {
   WNDCLASS wc;
@@ -49,11 +50,16 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine,
   ShowWindow(hWnd, SW_SHOWNORMAL);
   UpdateWindow(hWnd);
 
-  while (GetMessage(&msg, NULL, 0, 0))
-  {
-    TranslateMessage(&msg);
-    DispatchMessage(&msg);
-  }
+  /* Message loop */
+  while (TRUE)
+    if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+    {
+      if (msg.message == WM_QUIT)
+        break;
+      DispatchMessage(&msg);
+    }
+    else
+      SendMessage(hWnd, WM_TIMER, 30, 0);
   return msg.wParam;
 }
 LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
@@ -63,6 +69,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   static HBITMAP hBmFrame;
   static HDC hDCFrame;
   static INT w, h;
+  static CHAR Buf[100];
 
   switch (Msg)
   {
@@ -73,7 +80,8 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     hDC = GetDC(hWnd);
     hDCFrame = CreateCompatibleDC(hDC);
     ReleaseDC(hWnd, hDC);
-
+    
+    GLB_TimerInit();
 
     return 0;
 
@@ -94,17 +102,24 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     return 0;
 
   case WM_TIMER:
-
+    GLB_TimerResponse();
+    
     /* Draw background */
     SelectObject(hDCFrame, GetStockObject(NULL_PEN));
     SelectObject(hDCFrame, GetStockObject(DC_BRUSH));
-    SetDCBrushColor(hDCFrame, RGB(200, 230, 220));
+    SetDCBrushColor(hDCFrame, RGB(120, 150, 150));
     Rectangle(hDCFrame, 0, 0, w, h);
 
     /* Draw sphere */
     SelectObject(hDCFrame, GetStockObject(DC_PEN));
-    SetDCPenColor(hDCFrame, RGB(255, 0, 0));
+    SetDCPenColor(hDCFrame, RGB(255, 0, 50));
+    SelectObject(hDCFrame, GetStockObject(DC_BRUSH));
+    SetDCBrushColor(hDCFrame, RGB(200, 220, 200));
     GlobeDraw(hDCFrame);
+
+    SetBkMode(hDCFrame, TRANSPARENT);
+    SetTextColor(hDCFrame, RGB(255, 255, 100));
+    TextOut(hDCFrame, 8, 8, Buf, sprintf(Buf, "FPS: %.3f", GLB_FPS));
 
     InvalidateRect(hWnd, NULL, FALSE);
 
@@ -120,7 +135,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
     EndPaint(hWnd, &ps);
     return 0;
 
-/*
+
   case WM_GETMINMAXINFO:
     ((MINMAXINFO *)lParam)->ptMaxTrackSize.y =
       GetSystemMetrics(SM_CYMAXTRACK) + GetSystemMetrics(SM_CYCAPTION) + 2 * GetSystemMetrics(SM_CYBORDER);
@@ -129,13 +144,22 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   case WM_KEYDOWN:
     if (wParam == VK_ESCAPE)
       SendMessage(hWnd, WM_CLOSE, 0, 0);
+    else if (wParam == 'F')
+      FlipFullScreen(hWnd);
+    else if (wParam = 'P')
+      GLB_IsPause = !GLB_IsPause;
+    return 0;
+
+  case WM_CLOSE:
+    if(MessageBox(hWnd, "Are you sure to exit ?", "Exit", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON1) == IDYES)
+      break;
     return 0;
 
   case WM_SYSKEYDOWN:
     if (wParam == VK_RETURN)
       FlipFullScreen(hWnd);
     return 0;
-*/
+
 
   case WM_DESTROY:
     if (hBmFrame != NULL)
@@ -148,7 +172,7 @@ LRESULT CALLBACK MyWindowFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 }
 
-#if 0
+
 /* Toggle window fullscreen mode function.
  * ARGUMENTS:
  *   - window handle:
@@ -199,4 +223,3 @@ VOID FlipFullScreen( HWND hWnd )
       SWP_NOOWNERZORDER);
   }
 } /* End of 'FlipFullScreen' function */
-#endif

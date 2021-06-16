@@ -10,6 +10,8 @@
 
 #include <windows.h>
 
+#include "timer.h"
+
 #pragma warning(disable: 4244)
 
 /* Base float point type */
