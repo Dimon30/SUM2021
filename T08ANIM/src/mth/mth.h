@@ -107,7 +107,10 @@ __inline DBL VecDotVec( VEC V1, VEC V2 )
   return (V1.X * V2.X + V1.Y * V2.Y + V1.Z * V2.Z) / (sqrt(V1.X * V1.X + V1.Y * V1.Y + V1.Z * V1.Z) + sqrt(V2.X * V2.X + V2.Y * V2.Y + V2.Z * V2.Z));
 }
 /* векторное произведение векторов */
-__inline VEC VecCrossVec( VEC V1, VEC V2 );
+__inline VEC VecCrossVec( VEC V1, VEC V2 )
+{
+  return VecSet(V1.Y * V2.Z - V1.Z * V2.Y + V1.Z * V2.X - V1.X * V2.Z + V1.X * V2.Y - V1.Y * V2.X);
+}
 
 __inline DBL VecLen2( VEC V );
 __inline DBL VecLen( VEC V )
@@ -211,6 +214,14 @@ __inline MATR MatrMulMatr( MATR M1, MATR M2 )
   return r;
 }
 
+__inline MATR MatrMulMatr3( MATR M1, MATR M2 , MATR M3) 
+{
+  MATR r;
+
+  r = MatrMulMatr(MatrMulMatr(M1, M2), M3);
+  return r;
+}
+
 __inline MATR MatrTranspose( MATR M );
 
 __inline DBL MatrDeterm3x3( DBL A11, DBL A12, DBL A13,
@@ -224,16 +235,16 @@ __inline DBL MatrDeterm3x3( DBL A11, DBL A12, DBL A13,
 __inline DBL MatrDeterm( MATR M )
 {
   return
-    +M.A[0][0] * MatrDeterm3x3(M.A[1][1], M.A[1][2], M.A[1][3],
+     M.A[0][0] * MatrDeterm3x3(M.A[1][1], M.A[1][2], M.A[1][3],
                                M.A[2][1], M.A[2][2], M.A[2][3],
-                               M.A[3][1], M.A[3][2], M.A[3][3]) +
-    -M.A[0][1] * MatrDeterm3x3(M.A[1][0], M.A[1][2], M.A[1][3],
+                               M.A[3][1], M.A[3][2], M.A[3][3]) -
+     M.A[0][1] * MatrDeterm3x3(M.A[1][0], M.A[1][2], M.A[1][3],
                                M.A[2][0], M.A[2][2], M.A[2][3],
                                M.A[3][0], M.A[3][2], M.A[3][3]) +
-    +M.A[0][2] * MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][3],
+     M.A[0][2] * MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][3],
                                M.A[2][0], M.A[2][1], M.A[2][3],
-                               M.A[3][0], M.A[3][1], M.A[3][3]) +
-    -M.A[0][3] * MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][2],
+                               M.A[3][0], M.A[3][1], M.A[3][3]) -
+     M.A[0][3] * MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][2],
                                M.A[2][0], M.A[2][1], M.A[2][2],
                                M.A[3][0], M.A[3][1], M.A[3][2]);
 }
@@ -249,7 +260,7 @@ __inline MATR MatrInverse( MATR M )
 
   /* build adjoint matrix */
   r.A[0][0] =
-    +MatrDeterm3x3(M.A[1][1], M.A[1][2], M.A[1][3],
+     MatrDeterm3x3(M.A[1][1], M.A[1][2], M.A[1][3],
                    M.A[2][1], M.A[2][2], M.A[2][3],
                    M.A[3][1], M.A[3][2], M.A[3][3]) / det;
   r.A[1][0] =
@@ -257,7 +268,7 @@ __inline MATR MatrInverse( MATR M )
                    M.A[2][0], M.A[2][2], M.A[2][3],
                    M.A[3][0], M.A[3][2], M.A[3][3]) / det;
   r.A[2][0] =
-    +MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][3],
+     MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][3],
                    M.A[2][0], M.A[2][1], M.A[2][3],
                    M.A[3][0], M.A[3][1], M.A[3][3]) / det;
   r.A[3][0] =
@@ -270,7 +281,7 @@ __inline MATR MatrInverse( MATR M )
                    M.A[2][1], M.A[2][2], M.A[2][3],
                    M.A[3][1], M.A[3][2], M.A[3][3]) / det;
   r.A[1][1] =
-    +MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
+     MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
                    M.A[2][0], M.A[2][2], M.A[2][3],
                    M.A[3][0], M.A[3][2], M.A[3][3]) / det;
   r.A[2][1] =
@@ -278,13 +289,13 @@ __inline MATR MatrInverse( MATR M )
                    M.A[2][0], M.A[2][1], M.A[2][3],
                    M.A[3][0], M.A[3][1], M.A[3][3]) / det;
   r.A[3][1] =
-    +MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
+     MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
                    M.A[2][0], M.A[2][1], M.A[2][2],
                    M.A[3][0], M.A[3][1], M.A[3][2]) / det;
 
 
   r.A[0][2] =
-    +MatrDeterm3x3(M.A[0][1], M.A[0][2], M.A[0][3],
+     MatrDeterm3x3(M.A[0][1], M.A[0][2], M.A[0][3],
                    M.A[1][1], M.A[1][2], M.A[1][3],
                    M.A[3][1], M.A[3][2], M.A[3][3]) / det;
   r.A[1][2] =
@@ -292,7 +303,7 @@ __inline MATR MatrInverse( MATR M )
                    M.A[1][0], M.A[1][2], M.A[1][3],
                    M.A[3][0], M.A[3][2], M.A[3][3]) / det;
   r.A[2][2] =
-    +MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][3],
+     MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][3],
                    M.A[1][0], M.A[1][1], M.A[1][3],
                    M.A[3][0], M.A[3][1], M.A[3][3]) / det;
   r.A[3][2] =
@@ -305,7 +316,7 @@ __inline MATR MatrInverse( MATR M )
                    M.A[1][1], M.A[1][2], M.A[1][3],
                    M.A[2][1], M.A[2][2], M.A[2][3]) / det;
   r.A[1][3] =
-    +MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
+     MatrDeterm3x3(M.A[0][0], M.A[0][2], M.A[0][3],
                    M.A[1][0], M.A[1][2], M.A[1][3],
                    M.A[2][0], M.A[2][2], M.A[2][3]) / det;
   r.A[2][3] =
@@ -313,7 +324,7 @@ __inline MATR MatrInverse( MATR M )
                    M.A[1][0], M.A[1][1], M.A[1][3],
                    M.A[2][0], M.A[2][1], M.A[2][3]) / det;
   r.A[3][3] =
-    +MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
+     MatrDeterm3x3(M.A[0][0], M.A[0][1], M.A[0][2],
                    M.A[1][0], M.A[1][1], M.A[1][2],
                    M.A[2][0], M.A[2][1], M.A[2][2]) / det;
 
