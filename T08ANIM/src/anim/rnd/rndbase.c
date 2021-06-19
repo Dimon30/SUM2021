@@ -7,7 +7,7 @@
 #include "rnd.h"
 
 
-VOID DS6_RndCamSet( VEC Loc, VEC At, VEC Up1 )
+VOID DS6_hRndCamSet( VEC Loc, VEC At, VEC Up1 )
 {
   DS6_RndMatrView = MatrView(Loc, At, Up1);
   DS6_RndMatrVP = MatrMulMatr(DS6_RndMatrView, DS6_RndMatrProj);
@@ -28,9 +28,9 @@ VOID DS6_RndInit( HWND hWnd )
   DS6_RndProjDist = 0.1,
   DS6_RndProjFarClip = 300;
 
-  DS6_RndFrameW = 50;
-  DS6_RndFrameH = 50;
-  DS6_hRndCamSet(VecSet(0, 0, 30), VecSet(0, 0, 0), VecSet(0, 1, 0));
+  DS6_RndFrameW = 47;
+  DS6_RndFrameH = 47;
+  DS6_hRndCamSet(VecSet(5, 5, 50), VecSet(0, 0, 0), VecSet(0, 1, 0));
 
 }
 
@@ -72,12 +72,12 @@ VOID DS6_RndStart( VOID )
 {
   SelectObject(DS6_hRndDCFrame,GetStockObject(NULL_PEN));
   SelectObject(DS6_hRndDCFrame,GetStockObject(DC_BRUSH));
-  SetDCBrushColor(DS6_hRndDCFrame, RGB(102, 180, 220));
+  SetDCBrushColor(DS6_hRndDCFrame, RGB(40, 40, 40));
   Rectangle(DS6_hRndDCFrame, 0, 0, DS6_RndFrameW + 1, DS6_RndFrameH + 1);
 
   SelectObject(DS6_hRndDCFrame,GetStockObject(DC_PEN));
   SelectObject(DS6_hRndDCFrame,GetStockObject(NULL_BRUSH));
-  SetDCPenColor(DS6_hRndDCFrame, RGB(255, 255, 225));
+  SetDCPenColor(DS6_hRndDCFrame, RGB(2, 255, 225));
 
 }
 VOID DS6_RndEnd( VOID )

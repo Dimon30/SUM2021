@@ -29,6 +29,8 @@ typedef unsigned long long UINT64;
 
 #include <time.h>
 
+#define pi 3.14159265358979323846
+
 
 #endif /* __def_h_ */
 

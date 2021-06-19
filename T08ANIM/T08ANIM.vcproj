@@ -193,6 +193,18 @@
 			<Filter
 				Name="Animation System"
 				>
+				<File
+					RelativePath=".\anim.c"
+					>
+				</File>
+				<File
+					RelativePath=".\anim.h"
+					>
+				</File>
+				<File
+					RelativePath=".\unit.c"
+					>
+				</File>
 				<Filter
 					Name="Rendering Subsystem"
 					>
@@ -210,6 +222,14 @@
 					</File>
 					<File
 						RelativePath=".\src\anim\rnd\rndprim.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Units"
+					>
+					<File
+						RelativePath=".\Units.h"
 						>
 					</File>
 				</Filter>

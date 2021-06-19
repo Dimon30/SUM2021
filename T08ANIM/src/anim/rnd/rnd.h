@@ -59,6 +59,14 @@ VOID DS6_RndPrimFree( ds6PRIM *Pr );
 
 VOID DS6_RndPrimDraw( ds6PRIM *Pr, MATR World );
 
+BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName );
+
+BOOL DS6_RndPrimCreateGrid( ds6PRIM *Pr, INT SplitW, INT SplitH);
+
+BOOL DS6_RndPrimCreateSphere( ds6PRIM *Pr, VEC C, DBL R, INT SplitW, INT SplitH );
+
+BOOL DS6_RndPrimCreatePlane( ds6PRIM *Pr, VEC P, VEC Du, VEC Dv, INT SplitW, INT SplitH);
+
 #endif /* __rnd_h_*/
 
 /* END OF 'rnd.h' FILE */

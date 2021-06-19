@@ -57,6 +57,14 @@ __inline VEC VecSet( DBL X, DBL Y, DBL Z )
   return v;
 } /* End of 'VecSet' function */
 
+__inline VEC VecSet1( DBL D )
+{
+  VEC v;
+  
+  v.X = v.Y = v.Z = D;
+  return v;
+}
+
 /* Add two vectors function.
  * ARGUMENTS:
  *   - vectors to be add:
@@ -69,6 +77,10 @@ __inline VEC VecAddVec( VEC V1, VEC V2 )
   return VecSet(V1.X + V2.X, V1.Y + V2.Y, V1.Z + V2.Z);
 } /* End of 'VecAddVec' function */
 
+__inline VEC VecAddVec3( VEC V1, VEC V2, VEC V3)
+{
+  return VecAddVec(VecAddVec(V1, V2), V3);
+} /* End of 'VecAddVec' function */
 /*
 __inline VEC VecAddVec( VEC V1, VEC V2 )
 {
@@ -109,7 +121,11 @@ __inline DBL VecDotVec( VEC V1, VEC V2 )
 /* векторное произведение векторов */
 __inline VEC VecCrossVec( VEC V1, VEC V2 )
 {
-  return VecSet(V1.Y * V2.Z - V1.Z * V2.Y + V1.Z * V2.X - V1.X * V2.Z + V1.X * V2.Y - V1.Y * V2.X);
+  VEC v;
+  v.X = V1.Y * V2.Z - V1.Z * V2.Y;
+  v.Y = V1.Z * V2.X - V1.X * V2.Z;
+  v.Z = V1.X * V2.Y - V1.Y * V2.X;
+  return v;
 }
 
 __inline DBL VecLen2( VEC V );
@@ -132,17 +148,28 @@ __inline VEC VecNormalize( VEC V )
 }
 
 /* преобразования: */
-__inline VEC PointTransform( VEC V, MATR M )
-{
-
-}
 __inline VEC VectorTransform( VEC V, MATR M )
 {
 
 }
 __inline VEC VecMulMatr( VEC V, MATR M )
 {
-  DBL w = V.X * M.A[0][3] + V.Y * M.A[1][3] + V.Z * M.A[2][3] + M.A[3][3]; 
+  //DBL w = V.X * M.A[0][3] + V.X * M.A[1][3] + V.X * M.A[2][3] + M.A[3][3];
+  VEC v;
+
+  v.X = (V.X * M.A[0][0] + V.Y * M.A[0][1] + V.Z * M.A[0][2] + M.A[0][3]);
+  v.Y = (V.X * M.A[1][0] + V.Y * M.A[1][1] + V.Z * M.A[1][2] + M.A[1][3]);
+  v.Z = (V.X * M.A[2][0] + V.Y * M.A[2][1] + V.Z * M.A[2][2] + M.A[2][3]);
+  return v;
+}
+
+__inline VEC PointTransform( VEC V, MATR M )
+{
+  /* return VecSet(V.X * M.A[0][0] + V.Y * M.A[1][0] + V.Z * M.A[2][0] + M.A[3][0],
+                V.X * M.A[0][1] + V.Y * M.A[1][1] + V.Z * M.A[2][1] + M.A[3][1],
+                V.X * M.A[0][2] + V.Y * M.A[1][2] + V.Z * M.A[2][2] + M.A[3][2]);
+  */
+  return VecMulMatr(V, M);
 }
 
 /* Реализация матриц: */
@@ -179,10 +206,66 @@ __inline MATR MatrTranslate( VEC T )
   return m;
 }
 
-__inline MATR MatrScale( VEC S );
-__inline MATR MatrRotateX( DBL AngleInDegree );
-__inline MATR MatrRotateY( DBL AngleInDegree );
-__inline MATR MatrRotateZ( DBL AngleInDegree );
+__inline MATR MatrScale( VEC S )
+{
+  MATR m =
+  {
+    {
+     {S.X, 0, 0, 0},
+     {0, S.Y, 0, 0},
+     {0, 0, S.Z, 0},
+     {0, 0, 0, 1}
+    }
+  };
+  
+  return m;
+}
+#if 0
+__inline MATR MatrRotateX( DBL AngleInDegree )
+{
+  DBL a = D2R(AngleInDegree), s = sin(a), c = cos(a);
+  VEC A = VecNormalize(V);
+  MATR m =
+  {
+    {
+      {c + V.X * V.X * (1 - c), V.X * V.Y * (1 - c) + V.Z * s, V.X * V.Z * (1 - c) - V.Y * s, 0},
+      {0, 1, 0, 0},
+      {0, 0, 1, 0},
+      {0, 0, 0, 1}
+    }
+  };
+
+  return m;
+}
+__inline MATR MatrRotateY( DBL AngleInDegree )
+{
+  DBL a = D2R(AngleInDegree), s = sin(a), c = cos(a);
+  VEC A = VecNormalize(V);
+  MATR m =
+  {
+    {
+      {1, 0, 0, 0},
+      {V.Y * V.X * (1 - c) - V.Z * s, c + V.Y * V.Y * (1 - c), V.Z * V.Y * (1 - c) + V.X * s, 0},
+      {0, 0, 1, 0},
+      {0, 0, 0, 1}
+    }
+  };
+
+  return m;
+}
+__inline MATR MatrRotateZ( DBL AngleInDegree )
+{
+  DBL a = D2R(AngleInDegree), s = sin(a), c = cos(a);
+  VEC A = VecNormalize(V);
+  MATR m =
+  {
+    {1, 0, 0, 0},
+    {0, 1, 0, 0},
+    {V.Z * V.X * (1 - c) + V.Y * s, V.Z * V.Y * (1 - c) - V.X * s, c + V.Z * V.Z * (1 - c), 0},
+    {0, 0, 0, 1}
+  };
+  return m;
+}
 __inline MATR MatrRotate( DBL AngleInDegree, VEC V )
 {
   DBL a = D2R(AngleInDegree), s = sin(a), c = cos(a);
@@ -191,18 +274,16 @@ __inline MATR MatrRotate( DBL AngleInDegree, VEC V )
   {
     {
       {c + A.X * A.X * (1 - c), A.X * A.Y * (1 - c) + A.Z * s, A.X * A.Z * (1 - c) - A.Y * s, 0},
-      /*
-      {... , ... , ... , 0},
-      {... , ... , ... , 0},
-      */
+      {A.Y * A.X * (1 - c) - A.Z * s, c + A.Y * A.Y * (1 - c), A.Z * A.Y * (1 - c) + A.X * s, 0},
+      {V.Z * V.X * (1 - c) + A.Y * s, A.Z * A.Y * (1 - c) - A.X * s, c + A.Z * A.Z * (1 - c), 0},
       {0, 0, 0, 1}
-    }  
+    }
   };
 
   return m;
 }
-
-__inline MATR MatrMulMatr( MATR M1, MATR M2 ) 
+#endif
+__inline MATR MatrMulMatr( MATR M1, MATR M2 )
 {
   INT i, j, k;
   MATR r = {{{0}}};

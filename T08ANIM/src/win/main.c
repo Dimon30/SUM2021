@@ -97,7 +97,7 @@ LRESULT CALLBACK DS6_WinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam 
   HDC hDC;
   PAINTSTRUCT ps;
   static INT w, h;
-  static ds6PRIM Pr;
+  static ds6PRIM Pr, PrP, PrS, PrF;
 
   switch (Msg)
   {
@@ -116,19 +116,26 @@ LRESULT CALLBACK DS6_WinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam 
     Pr.I[0] = 0;
     Pr.I[1] = 1;
     Pr.I[2] = 2;
+    
+    DS6_RndPrimCreateSphere(&PrS, VecSet(0, 0, 0), 0.07, 27, 13);
+    DS6_RndPrimCreatePlane(&PrP, VecSet(-8, 0, 8), VecSet(18, 0, 0), VecSet(0, 0, -18), 8, 8);
+    DS6_RndPrimLoad(&PrF, "cow.obj");
     return 0;
 
   case WM_SIZE:
     /* Obtain new window width and height */
-    DS6_RndResize(LOWORD(lParam), HIWORD(lParam));
+    DS6_RndResize(LOWORD(lParam) + 1, HIWORD(lParam) + 1);
     SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
 
   case WM_TIMER:
     DS6_RndStart();
     /* scene rendaring */
-    /* Ellipse(DS6_hRndDCFrame, 5, 5, 100, 100); */
+    Ellipse(DS6_hRndDCFrame, 5, 5, 100, 100);
+    DS6_RndPrimDraw(&PrS, MatrIdentity());
+    DS6_RndPrimDraw(&PrP, MatrIdentity());
     DS6_RndPrimDraw(&Pr, MatrIdentity());
+    DS6_RndPrimDraw(&PrF, MatrScale(VecSet1(0.01)));
     DS6_RndEnd();
     hDC = GetDC(hWnd);
     DS6_RndCopyFrame(hDC);
@@ -156,7 +163,10 @@ LRESULT CALLBACK DS6_WinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam 
     break;
 
   case WM_DESTROY:
+    DS6_RndPrimFree(&PrF);
     DS6_RndPrimFree(&Pr);
+    DS6_RndPrimFree(&PrS);
+    DS6_RndPrimFree(&PrP);
     DS6_RndClose();
     KillTimer(hWnd, 30);
     PostMessage(hWnd, WM_QUIT, 0, 0);
