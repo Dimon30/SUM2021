@@ -182,6 +182,14 @@
 				RelativePath=".\src\def.h"
 				>
 			</File>
+			<File
+				RelativePath=".\src\anim\timer.c"
+				>
+			</File>
+			<File
+				RelativePath=".\src\anim\timer.h"
+				>
+			</File>
 			<Filter
 				Name="Math Support"
 				>
@@ -194,15 +202,15 @@
 				Name="Animation System"
 				>
 				<File
-					RelativePath=".\anim.c"
+					RelativePath=".\src\anim\anim.c"
 					>
 				</File>
 				<File
-					RelativePath=".\anim.h"
+					RelativePath=".\src\anim\anim.h"
 					>
 				</File>
 				<File
-					RelativePath=".\unit.c"
+					RelativePath=".\src\anim\unit.c"
 					>
 				</File>
 				<Filter
@@ -225,20 +233,24 @@
 						>
 					</File>
 				</Filter>
-				<Filter
-					Name="Units"
-					>
-					<File
-						RelativePath=".\Units.h"
-						>
-					</File>
-				</Filter>
 			</Filter>
 			<Filter
 				Name="Windows Depended"
 				>
 				<File
 					RelativePath=".\src\win\main.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Units"
+				>
+				<File
+					RelativePath=".\src\anim\input.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\anim\unit.h"
 					>
 				</File>
 			</Filter>

@@ -156,7 +156,6 @@ LRESULT CALLBACK DS6_WinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam 
     DS6_RndCopyFrame (hDC);;
     EndPaint(hWnd, &ps);
     */
-    DS6_AnimCopyFrame(hDC);
     return 0;
 
   case WM_KEYDOWN:
@@ -171,6 +170,18 @@ LRESULT CALLBACK DS6_WinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam 
 
   case WM_SYSKEYDOWN:
     break;
+
+  case WM_MOUSEWHEEL:
+    DS6_MouseWheel += (SHORT)HIWORD(wParam);
+    return 0;
+
+case WM_LBUTTONDOWN:
+    SetCapture(hWnd);
+    return 0;
+
+  case WM_LBUTTONUP:
+    ReleaseCapture();
+    return 0;
 
   case WM_DESTROY:
     /*

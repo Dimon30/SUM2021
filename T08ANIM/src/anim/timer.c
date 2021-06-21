@@ -25,8 +25,8 @@ VOID TimerResponse( VOID )
 
   QueryPerformanceCounter(&t);
   /* Global time */
-  GlobalTime = (FLT)(t.QuadPart - StartTime) / TimePerSec;
-  GlobalDeltaTime = (FLT)(t.QuadPart - OldTime) / TimePerSec;
+  GlobalTime = (DBL)(t.QuadPart - StartTime) / TimePerSec;
+  GlobalDeltaTime = (DBL)(t.QuadPart - OldTime) / TimePerSec;
   /* Time with pause */
   if (IsPause)
   {
@@ -36,13 +36,13 @@ VOID TimerResponse( VOID )
   else
   {
     DeltaTime = GlobalDeltaTime;
-    Time = (FLT)(t.QuadPart – PauseTime - StartTime) / TimePerSec;
+    Time = (DBL)(t.QuadPart – PauseTime - StartTime) / TimePerSec;
   }
   /* FPS */
   FrameCounter++;
   if (t.QuadPart – OldTimeFPS > TimePerSec)
   {
-    FPS = FrameCounter * TimePerSec / (FLT)(t.QuadPart – OldTimeFPS);
+    FPS = FrameCounter * TimePerSec / (DBL)(t.QuadPart – OldTimeFPS);
     OldTimeFPS = t.QuadPart;
     FrameCounter = 0;
   }

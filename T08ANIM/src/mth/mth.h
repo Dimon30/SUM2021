@@ -156,10 +156,12 @@ __inline VEC VecMulMatr( VEC V, MATR M )
 {
   //DBL w = V.X * M.A[0][3] + V.X * M.A[1][3] + V.X * M.A[2][3] + M.A[3][3];
   VEC v;
+  DBL w;
 
-  v.X = (V.X * M.A[0][0] + V.Y * M.A[0][1] + V.Z * M.A[0][2] + M.A[0][3]);
-  v.Y = (V.X * M.A[1][0] + V.Y * M.A[1][1] + V.Z * M.A[1][2] + M.A[1][3]);
-  v.Z = (V.X * M.A[2][0] + V.Y * M.A[2][1] + V.Z * M.A[2][2] + M.A[2][3]);
+  v.X = (V.X * M.A[0][3] + V.Y * M.A[1][3] + V.Z * M.A[2][3] + M.A[3][3]);
+  v.X = (V.X * M.A[0][0] + V.Y * M.A[1][0] + V.Z * M.A[2][0] + M.A[3][0]) / w;
+  v.Y = (V.X * M.A[0][1] + V.Y * M.A[1][1] + V.Z * M.A[2][1] + M.A[3][1]) / w;
+  v.Z = (V.X * M.A[0][2] + V.Y * M.A[1][2] + V.Z * M.A[2][2] + M.A[3][2]) / w;
   return v;
 }
 

@@ -58,7 +58,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine,
   }
 
   /* Window creation */
-  hWnd = CreateWindow(DS6_WND_CLASS_NAME, "CGSG Primary Practice Group First Window",
+  hWnd = CreateWindow(DS6_WND_CLASS_NAME, "CGSG Primary Practice Group Animation System",
     WS_OVERLAPPEDWINDOW,
     CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
     NULL, NULL, hInstance, NULL);
@@ -108,6 +108,7 @@ LRESULT CALLBACK DS6_WinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam 
 
   case WM_CREATE:
     SetTimer(hWnd, 30, 12, NULL);
+    /*
     DS6_RndInit(hWnd);
     DS6_RndPrimCreate(&Pr, 3, 3);
     Pr.V[0].P = VecSet(0, 0, 0);
@@ -120,23 +121,29 @@ LRESULT CALLBACK DS6_WinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam 
     DS6_RndPrimCreateSphere(&PrS, VecSet(0, 0, 0), 0.07, 27, 13);
     DS6_RndPrimCreatePlane(&PrP, VecSet(-8, 0, 8), VecSet(18, 0, 0), VecSet(0, 0, -18), 8, 8);
     DS6_RndPrimLoad(&PrF, "cow.obj");
+    */
+    DS6_AnimInit(hWnd);
     return 0;
 
   case WM_SIZE:
     /* Obtain new window width and height */
-    DS6_RndResize(LOWORD(lParam) + 1, HIWORD(lParam) + 1);
+    /* DS6_RndResize(LOWORD(lParam), HIWORD(lParam)); */
+    DS6_AnimResize(W, H);
     SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
 
   case WM_TIMER:
-    DS6_RndStart();
-    /* scene rendaring */
+    /*DS6_RndStart();
+    \* scene rendaring *\
     Ellipse(DS6_hRndDCFrame, 5, 5, 100, 100);
     DS6_RndPrimDraw(&PrS, MatrIdentity());
     DS6_RndPrimDraw(&PrP, MatrIdentity());
     DS6_RndPrimDraw(&Pr, MatrIdentity());
     DS6_RndPrimDraw(&PrF, MatrScale(VecSet1(0.01)));
     DS6_RndEnd();
+    */
+    AnimRender();
+
     hDC = GetDC(hWnd);
     DS6_RndCopyFrame(hDC);
     /* InvalidateRect(hWnd, NULL, FALSE); */
@@ -144,9 +151,12 @@ LRESULT CALLBACK DS6_WinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam 
     return 0;
 
   case WM_PAINT:
+    /*
     hDC = BeginPaint(hWnd, &ps);
     DS6_RndCopyFrame (hDC);;
     EndPaint(hWnd, &ps);
+    */
+    DS6_AnimCopyFrame(hDC);
     return 0;
 
   case WM_KEYDOWN:
@@ -163,12 +173,15 @@ LRESULT CALLBACK DS6_WinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam 
     break;
 
   case WM_DESTROY:
+    /*
     DS6_RndPrimFree(&PrF);
     DS6_RndPrimFree(&Pr);
     DS6_RndPrimFree(&PrS);
     DS6_RndPrimFree(&PrP);
     DS6_RndClose();
     KillTimer(hWnd, 30);
+    */
+    DS6_AnimClose();
     PostMessage(hWnd, WM_QUIT, 0, 0);
     return 0;
   }

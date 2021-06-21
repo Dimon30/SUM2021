@@ -101,7 +101,7 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
   {
     if (Buf[0] == 'v' && Buf[1] == ' ')
     {
-      DBL x, y, z;
+      FLT x, y, z;
 
       sscanf(Buf + 2, "%lf%lf%lf", &x, &y, &z);
       Pr->V[nv++].P = VecSet(x, y, z);
@@ -158,10 +158,10 @@ BOOL DS6_RndPrimCreateGrid( ds6PRIM *Pr, INT SplitW, INT SplitH)
   return TRUE;
 }
 
-BOOL DS6_RndPrimCreateSphere( ds6PRIM *Pr, VEC C, DBL R, INT SplitW, INT SplitH )
+BOOL DS6_RndPrimCreateSphere( ds6PRIM *Pr, VEC C, FLT R, INT SplitW, INT SplitH )
 {
   INT i, j;
-  DBL theta, phi;
+  FLT theta, phi;
 
   if (!DS6_RndPrimCreateGrid(Pr, SplitW, SplitH))
     return FALSE;

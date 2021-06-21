@@ -13,7 +13,7 @@ extern HDC DS6_hRndDCFrame;               /* Work window memory device context  
 extern HBITMAP DS6_hRndBmFrame;           /* Work window background bitmap handle */
 extern INT DS6_RndFrameW, DS6_RndFrameH;  /* Work window size */
 
-extern DBL
+extern FLT
   DS6_RndProjSize,     /* Project plane fit square */
   DS6_RndProjDist ,    /* Distance to project plane from viewer (near) */
   DS6_RndProjFarClip;  /* Distance to project far clip plane (far) */
@@ -63,7 +63,7 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName );
 
 BOOL DS6_RndPrimCreateGrid( ds6PRIM *Pr, INT SplitW, INT SplitH);
 
-BOOL DS6_RndPrimCreateSphere( ds6PRIM *Pr, VEC C, DBL R, INT SplitW, INT SplitH );
+BOOL DS6_RndPrimCreateSphere( ds6PRIM *Pr, VEC C, FLT R, INT SplitW, INT SplitH );
 
 BOOL DS6_RndPrimCreatePlane( ds6PRIM *Pr, VEC P, VEC Du, VEC Dv, INT SplitW, INT SplitH);
 

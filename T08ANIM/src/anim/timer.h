@@ -7,7 +7,7 @@ static UINT64
        PauseTime,    /* Time during pause period */
        TimePerSec,   /* Timer resolution */
        FrameCounter; /* Frames counter */
-FLT
+DBL
     GlobalTime, GlobalDeltaTime, /* Global time and interframe interval */
     Time, DeltaTime,             /* Time with pause and interframe interval */
     FPS;                         /* Frames per second value */

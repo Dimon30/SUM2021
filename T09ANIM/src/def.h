@@ -7,7 +7,7 @@
 #ifndef __def_h_
 #define __def_h_
 
-#pragma warning(disable: 4244)
+#pragma warning(disable: 4244 4305)
 
 /* Debug memory allocation support */
 #ifndef NDEBUG
@@ -25,6 +25,8 @@
 #include "src/anim/timer.h"
 #include "src/anim/anim.h"
 #include "src/anim/unit.h"
+#include "src/anim/unit.h"
+#include "src/anim/input.h"
 
 /* 64 bit integer data type */
 typedef long long INT64;

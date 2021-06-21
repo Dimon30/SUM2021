@@ -193,20 +193,20 @@
 			<Filter
 				Name="Math Support"
 				>
-				<File
-					RelativePath=".\src\mth\mth.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Animation System"
 				>
 				<File
-					RelativePath=".\anim.c"
+					RelativePath=".\src\anim\anim.c"
 					>
 				</File>
 				<File
-					RelativePath=".\anim.h"
+					RelativePath=".\src\anim\anim.h"
+					>
+				</File>
+				<File
+					RelativePath=".\src\anim\input.c"
 					>
 				</File>
 				<File
@@ -246,7 +246,7 @@
 				Name="Units"
 				>
 				<File
-					RelativePath=".\src\anim\input.c"
+					RelativePath=".\src\mth\mth.h"
 					>
 				</File>
 				<File

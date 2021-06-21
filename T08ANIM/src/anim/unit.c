@@ -5,6 +5,7 @@
  * PURPOSE: implementation of animation object handling.
  */
 
+#include "anim.h"
 /*
  * Unit initialization function.
  * ARGUMENTS:
@@ -56,5 +57,28 @@ static VOID DS6_UnitResponse( ds6UNIT *Uni, ds6ANIM *Ani )
 static VOID DS6_UnitRender( ds6UNIT *Uni, ds6ANIM *Ani )
 {
 } /* End of 'DS6_UnitRender' function */
+
+/*
+ * Unit creation function.
+ * ARGUMENTS:
+ *   - unit structure size in bytes:
+ *      INT Size;
+ * RETURNS: 
+     (ds6UNIT *) pointer to created unit.
+ */
+ds6UNIT * DS6_AnimUnitCreate( INT Size )
+{
+  ds6UNIT *Uni;
+ /* memory allocation */
+  if (Size < sizeof(ds6UNIT) || (Uni = malloc(Size)) == NULL)
+    return NULL;
+  memset(Uni, 0, Size);
+  /* Setup unit methods */
+  Uni->Init = DS6_UnitInit;
+  Uni->Close = DS6_UnitClose;
+  Uni->Response = DS6_UnitResponse;
+  Uni->Render = DS6_UnitRender;
+  return Uni;
+}/* End of 'DS6_UnitRender' function */
 
 /* END OF 'unit.c' FILE */

@@ -22,6 +22,9 @@
 #include <stdlib.h>
 
 #include "mth/mth.h"
+#include "timer.h"
+#include "src/anim/anim.h"
+#include "src/anim/unit.h"
 
 /* 64 bit integer data type */
 typedef long long INT64;
