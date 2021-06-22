@@ -182,17 +182,13 @@
 				RelativePath=".\src\def.h"
 				>
 			</File>
-			<File
-				RelativePath=".\src\anim\timer.c"
-				>
-			</File>
-			<File
-				RelativePath=".\src\anim\timer.h"
-				>
-			</File>
 			<Filter
 				Name="Math Support"
 				>
+				<File
+					RelativePath=".\src\mth\mth.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Animation System"
@@ -210,12 +206,20 @@
 					>
 				</File>
 				<File
-					RelativePath=".\unit.c"
+					RelativePath=".\src\anim\timer.c"
+					>
+				</File>
+				<File
+					RelativePath=".\src\anim\unit.c"
 					>
 				</File>
 				<Filter
 					Name="Rendering Subsystem"
 					>
+					<File
+						RelativePath=".\src\anim\rnd\glew.c"
+						>
+					</File>
 					<File
 						RelativePath=".\src\anim\rnd\rnd.h"
 						>
@@ -246,11 +250,11 @@
 				Name="Units"
 				>
 				<File
-					RelativePath=".\src\mth\mth.h"
+					RelativePath=".\src\units\u_cow.c"
 					>
 				</File>
 				<File
-					RelativePath=".\unit.h"
+					RelativePath=".\src\units\units.h"
 					>
 				</File>
 			</Filter>
