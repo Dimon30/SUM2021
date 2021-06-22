@@ -1,4 +1,3 @@
-
 /* FILE NAME: mth.h
  * PROGRAMMER: DS6
  * DATE: 17.06.2021
@@ -21,13 +20,48 @@
 
 /* Base float point types */
 typedef double DBL;
-typedef double FLT;
+typedef float FLT;
 
 /* Space vector/point representation type */
 typedef struct tagVEC
 {
   FLT X, Y, Z; /* Vector coordinates */
 } VEC;
+
+typedef struct tagVEC2
+{
+  FLT X, Y;
+} VEC2;
+
+typedef struct tagVEC4
+{
+  FLT X, Y, Z, W;
+} VEC4;
+
+__inline VEC4 Vec4Set( FLT A, FLT B, FLT C, FLT D )
+{
+  VEC4 v = {A, B, C, D};
+
+  return v;
+}
+__inline VEC4 Vec4Set1( FLT A )
+{
+  VEC4 v = {A};
+
+  return v;
+}
+__inline VEC2 Vec2Set( FLT A, FLT B )
+{
+  VEC2 v = {A, B};
+
+  return v;
+}
+__inline VEC2 Vec2Set1( FLT A )
+{
+  VEC2 v = {A};
+
+  return v;
+}
 
 /* Transformation matrix representation type */
 typedef struct tagMATR
@@ -116,7 +150,7 @@ __inline VEC VecNeg( VEC V )
 /* скалярное произведение векторов */
 __inline FLT VecDotVec( VEC V1, VEC V2 )
 {
-  return (V1.X * V2.X + V1.Y * V2.Y + V1.Z * V2.Z) / (sqrt(V1.X * V1.X + V1.Y * V1.Y + V1.Z * V1.Z) + sqrt(V2.X * V2.X + V2.Y * V2.Y + V2.Z * V2.Z));
+  return V1.X * V2.X + V1.Y * V2.Y + V1.Z * V2.Z;
 }
 /* векторное произведение векторов */
 __inline VEC VecCrossVec( VEC V1, VEC V2 )
@@ -154,11 +188,9 @@ __inline VEC VectorTransform( VEC V, MATR M )
 }
 __inline VEC VecMulMatr( VEC V, MATR M )
 {
-  //FLT w = V.X * M.A[0][3] + V.X * M.A[1][3] + V.X * M.A[2][3] + M.A[3][3];
+  FLT w = V.X * M.A[0][3] + V.X * M.A[1][3] + V.X * M.A[2][3] + M.A[3][3];
   VEC v;
-  FLT w;
 
-  v.X = (V.X * M.A[0][3] + V.Y * M.A[1][3] + V.Z * M.A[2][3] + M.A[3][3]);
   v.X = (V.X * M.A[0][0] + V.Y * M.A[1][0] + V.Z * M.A[2][0] + M.A[3][0]) / w;
   v.Y = (V.X * M.A[0][1] + V.Y * M.A[1][1] + V.Z * M.A[2][1] + M.A[3][1]) / w;
   v.Z = (V.X * M.A[0][2] + V.Y * M.A[1][2] + V.Z * M.A[2][2] + M.A[3][2]) / w;
@@ -222,17 +254,16 @@ __inline MATR MatrScale( VEC S )
   
   return m;
 }
-#if 0
+/*
 __inline MATR MatrRotateX( FLT AngleInDegree )
 {
-  FLT a = D2R(AngleInDegree), s = sin(a), c = cos(a);
-  VEC A = VecNormalize(V);
+  FLT a = D2R(AngleInDegree);
   MATR m =
   {
     {
-      {c + V.X * V.X * (1 - c), V.X * V.Y * (1 - c) + V.Z * s, V.X * V.Z * (1 - c) - V.Y * s, 0},
-      {0, 1, 0, 0},
-      {0, 0, 1, 0},
+      {1, 0, 0, 0},
+      {0, cos(a), sin(a), 0},
+      {0, -sin(a), cos(a), 0},
       {0, 0, 0, 1}
     }
   };
@@ -241,14 +272,13 @@ __inline MATR MatrRotateX( FLT AngleInDegree )
 }
 __inline MATR MatrRotateY( FLT AngleInDegree )
 {
-  FLT a = D2R(AngleInDegree), s = sin(a), c = cos(a);
-  VEC A = VecNormalize(V);
+  FLT a = D2R(AngleInDegree);
   MATR m =
   {
     {
-      {1, 0, 0, 0},
-      {V.Y * V.X * (1 - c) - V.Z * s, c + V.Y * V.Y * (1 - c), V.Z * V.Y * (1 - c) + V.X * s, 0},
-      {0, 0, 1, 0},
+      {cos(a), 0, -sin(a), 0},
+      {0, 1, 0, 0},
+      {sin(a), 0, cos(a), 0},
       {0, 0, 0, 1}
     }
   };
@@ -257,17 +287,17 @@ __inline MATR MatrRotateY( FLT AngleInDegree )
 }
 __inline MATR MatrRotateZ( FLT AngleInDegree )
 {
-  FLT a = D2R(AngleInDegree), s = sin(a), c = cos(a);
-  VEC A = VecNormalize(V);
+  FLT a = D2R(AngleInDegree);
   MATR m =
   {
-    {1, 0, 0, 0},
-    {0, 1, 0, 0},
-    {V.Z * V.X * (1 - c) + V.Y * s, V.Z * V.Y * (1 - c) - V.X * s, c + V.Z * V.Z * (1 - c), 0},
+    {cos(a), sin(a), 0, 0},
+    {-sin(a), cos(a), 0, 0},
+    {0, 0, 1, 0},
     {0, 0, 0, 1}
   };
   return m;
 }
+*/
 __inline MATR MatrRotate( FLT AngleInDegree, VEC V )
 {
   FLT a = D2R(AngleInDegree), s = sin(a), c = cos(a);
@@ -284,7 +314,7 @@ __inline MATR MatrRotate( FLT AngleInDegree, VEC V )
 
   return m;
 }
-#endif
+
 __inline MATR MatrMulMatr( MATR M1, MATR M2 )
 {
   INT i, j, k;
@@ -474,7 +504,7 @@ __inline MATR MatrFrustum( FLT l, FLT r, FLT b, FLT t, FLT n, FLT f)
       {2 * n / (r - l), 0, 0, 0},
       {0, 2 * n / (t - b), 0, 0},
       {(r + l) / (r - l), (t + b) / (t - b), (f + n) / (n - f), -1},
-      {0, 0, 2 * n * f * (n - f), 0}
+      {0, 0, 2 * n * f / (n - f), 0}
     }
   };
   return M;

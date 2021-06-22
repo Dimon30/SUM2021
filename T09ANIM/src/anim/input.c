@@ -1,68 +1,99 @@
-#include "../anim.h"
+/* FILE NAME: ???
+ * PROGRAMMER: DS6
+ * DATE: 22.06.2021
+ * PURPOSE: ???.
+ */
 
-VOID InputInit( VOID )
+#include <string.h>
+
+#include "anim.h"
+
+#include <mmsystem.h>
+
+#pragma comment(lib, "winmm")
+
+#define DS6_GET_JOYSTIC_AXIS(A) \
+  (2.0 * (ji.dw ## A ## pos - jc.w ## A ## min) / (jc.w ## A ## min) - 1)
+
+INT DS6_MouseWheel;
+
+
+static VOID DS6_AnimKeyboardInit( VOID )
 {
-  VOID DS6_AnimKeyboardInit( VOID )
-  {
-    GetKeyboardState(Keys);
-  }
-  
-  VOID DS6_AnimMousenit( VOID )
-  {
-    POINT pt;
-    
-    GetCursorPos(&pt);
-    ScreenToClient(hWnd, &pt);
+  GetKeyboardState(DS6_Anim.Keys);
+}
+static VOID DS6_AnimKeyboardResponse( VOID )
+{
+}
 
-    Mdx = pt.x - Mx;
-    Mdy = pt.y - My;
-  }
-  
-  VOID DS6_AnimJoystickInit( VOID )
+static VOID DS6_AnimMousenit( VOID )
+{
+  POINT pt;
+
+  GetCursorPos(&pt);
+  ScreenToClient(DS6_Anim.hWnd, &pt);
+
+  DS6_Anim.Mdx = pt.x - DS6_Anim.Mx;
+  DS6_Anim.Mdy = pt.y - DS6_Anim.My;
+}
+static VOID DS6_AnimMouseResponse( VOID )
+{
+  POINT pt;
+
+  GetCursorPos(&pt);
+  ScreenToClient(DS6_Anim.hWnd, &pt);
+
+  DS6_Anim.Mx = pt.x;
+  DS6_Anim.My = pt.y;
+  DS6_Anim.Mdz = DS6_MouseWheel;
+  DS6_Anim.Mz += DS6_MouseWheel;
+}
+
+static VOID DS6_AnimJoystickInit( VOID )
+{
+  INT i;
+
+  /* Joystick */
+  if (joyGetNumDevs() > 0)
   {
-    /* Joystick */
-    if (joyGetNumDevs() > 0)
+    JOYCAPS jc;
+
+    /* Get joystick info */
+    if (joyGetDevCaps(JOYSTICKID1, &jc, sizeof(jc)) == JOYERR_NOERROR)
     {
-      JOYCAPS jc;
+      JOYINFOEX ji;
 
-      /* Get joystick info */
-      if (joyGetDevCaps(JOYSTICKD1, &jc, sizeof(jc)) == JOYERR_NOERROR)
+      ji.dwSize = sizeof(JOYINFOEX);
+      ji.dwFlags = JOY_RETURNALL;
+      if (joyGetPosEx(JOYSTICKID1, &ji) == JOYERR_NOERROR)
       {
-        JOYINFOEX ji;
-
-        ji.dwSize = sizeof(JOYINFOEX);
-        ji.dwFlags = JOY_RETURNALL;
-        if (joyGetPosEx(JOYSTICKD!, &ji) ==JOYERR_NOERROR)
+        /* Buttons */
+        for (i = 0; i < 32; i++)
         {
-          /* Buttons */
-          for (i = 0; i < 32; i++)
-          {
-            JBut[i] = (ji.dwButtons >> i) & 1;
-            JButClick[i] = JBut[i] && !JButOld[i];
-            JButOld[i] = JBut[i];
-          }
-          /* Axes */
-          JX = DS6_GET_JOYSTIC_AXIS(X);
-          JY = DS6_GET_JOYSTIC_AXIS(Y);
-          JZ = DS6_GET_JOYSTIC_AXIS(Z);
-          JR = DS6_GET_JOYSTIC_AXIS(R);
-          /* Point of view */
-          JPov = ji.dwPOV == 0xFFFF ? -1 : ji.dwPOV / 4500;
+          DS6_Anim.JBut[i] = (ji.dwButtons >> i) & 1;
+          DS6_Anim.JButClick[i] = DS6_Anim.JBut[i] && !DS6_Anim.JButOld[i];
+          DS6_Anim.JButOld[i] = DS6_Anim.JBut[i];
         }
+        /* Axes */
+        DS6_Anim.JX = DS6_GET_JOYSTIC_AXIS(X);
+        DS6_Anim.JY = DS6_GET_JOYSTIC_AXIS(Y);
+        DS6_Anim.JZ = DS6_GET_JOYSTIC_AXIS(Z);
+        DS6_Anim.JR = DS6_GET_JOYSTIC_AXIS(R);
+        /* Point of view */
+        DS6_Anim.JPov = ji.dwPOV == 0xFFFF ? -1 : ji.dwPOV / 4500;
       }
     }
   }
-
-  INT DS6_MouseWheel;
-
-  Mdz = DS6_MouseWheel;
-  Mz += DS6_MouseWheel;
 }
-VOID InputResponse( VOID )
+static VOID DS6_AnimJoysstickResponse( VOID )
+{
+}
+
+
+VOID DS6_AnimInputInit( VOID )
 {
 
-  Mx = pt.x;
-  My = pt.y;
-  
-  
+}
+VOID DS6_AnimInputResponse( VOID )
+{
 }

@@ -6,11 +6,14 @@
 #ifndef __rnd_h_
 #define __rnd_h_
 
+#define GLEW_STATIC
+#include <glew.h>
+
 #include "../../def.h"
 
 extern HWND DS6_hRndWnd;                  /* Work window handle */
-extern HDC DS6_hRndDCFrame;               /* Work window memory device context  */
-extern HBITMAP DS6_hRndBmFrame;           /* Work window background bitmap handle */
+extern HDC DS6_hRndDC;                    /* Work window memory device context */
+extern HGLRC DS6_hRndGLRC;                /* OpenGL rendering context */
 extern INT DS6_RndFrameW, DS6_RndFrameH;  /* Work window size */
 
 extern FLT
@@ -35,14 +38,17 @@ VOID DS6_RndStart( VOID );
 
 VOID DS6_RndEnd( VOID );
 
-VOID DS6_RndCopyFrame( HDC hDC );
+VOID DS6_RndCopyFrame( VOID );
 
 VOID DS6_RndCamSet( VEC Loc, VEC At, VEC Up1 );
 
 typedef struct tagds6VERTEX
 {
   VEC P; /* Vertex position */
-}ds6VERTEX;
+  VEC2 T;
+  VEC N;
+  VEC4 C;
+} ds6VERTEX;
 
 typedef struct tagds6PRIM
 {
@@ -51,9 +57,19 @@ typedef struct tagds6PRIM
   INT *I;
   INT NumOfI;
   MATR Trans;
+  INT VBuf;
+  INT VA;
+  INT IBuf;
+  INT NumOfElements;
+
 } ds6PRIM;
 
-BOOL DS6_RndPrimCreate( ds6PRIM *Pr, INT NoofV, INT NoofI );
+VEC4 Vec4Set( FLT A, FLT B, FLT C, FLT D );
+VEC4 Vec4Set1( FLT A );
+VEC2 Vec2Set( FLT A, FLT B );
+VEC2 Vec2Set1( FLT A );
+
+VOID DS6_RndPrimCreate( ds6PRIM *Pr, ds6VERTEX *V, INT NumOfV, INT *I, INT NumOfI );
 
 VOID DS6_RndPrimFree( ds6PRIM *Pr );
 

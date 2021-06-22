@@ -1,51 +1,68 @@
-VOID DS6_AnimInit ( HWND hWnd )
+/* FILE NAME: anim.c
+ * PROGRAMMER: DS6
+ * DATE: 22.06.2021
+ * PURPOSE: .
+ */
+
+#include "anim.h"
+
+ds6ANIM DS6_Anim;
+
+VOID DS6_AnimInit( HWND hWnd )
 {
   DS6_RndInit(hWnd);
-  DS6_RndPrimCreate(&Pr, 3, 3);
-  Pr.V[0].P = VecSet(0, 0, 0);
-  Pr.V[1].P = VecSet(2, 0, 0);
-  Pr.V[2].P = VecSet(0, 3, 0);
-  Pr.I[0] = 0;
-  Pr.I[1] = 1;
-  Pr.I[2] = 2;
+  DS6_Anim.hWnd = hWnd;
 
-  DS6_RndPrimCreateSphere(&PrS, VecSet(0, 0, 0), 0.07, 27, 13);
-  DS6_RndPrimCreatePlane(&PrP, VecSet(-8, 0, 8), VecSet(18, 0, 0), VecSet(0, 0, -18), 8, 8);
-  DS6_RndPrimLoad(&PrF, "cow.obj");
+  DS6_TimerInit();
+  DS6_AnimInputInit();
 }
 
-VOID DS6_AnimClose ( VOID )
+VOID DS6_AnimClose( VOID )
 {
-   DS6_RndPrimFree(&PrF);
-    DS6_RndPrimFree(&Pr);
-    DS6_RndPrimFree(&PrS);
-    DS6_RndPrimFree(&PrP);
-    DS6_RndClose();
+  INT i;
+
+  for (i = 0; i < DS6_Anim.NumOfUnits; i++)
+  {
+    DS6_Anim.Units[i]->Close(DS6_Anim.Units[i], &DS6_Anim);
+    free(DS6_Anim.Units[i]);
+    DS6_Anim.Units[i] = NULL;
+  }
+  DS6_Anim.NumOfUnits = 0;
+  DS6_RndClose();
 }
 
-VOID DS6_AnimResize(INT W, INT H)
+VOID DS6_AnimResize( INT W, INT H )
 {
-  DS6_RndResize(LOWORD(lParam), HIWORD(lParam));
+  DS6_Anim.W = W;
+  DS6_Anim.H = H;
+  DS6_RndResize(W, H);
 }
 
-VOID DS6_AnimCopyFrame( HDC hDC )
+VOID DS6_AnimCopyFrame( VOID )
 {
-  hDC = BeginPaint(hWnd, &ps);
-  DS6_RndCopyFrame (hDC);;
-  EndPaint(hWnd, &ps);
+  DS6_RndCopyFrame();
 }
 
 VOID DS6_AnimRender( VOID )
 {
+  INT i;
+
+  DS6_TimerResponse();
+  DS6_AnimInputResponse();
+
+  for (i = 0; i < DS6_Anim.NumOfUnits; i++)
+    DS6_Anim.Units[i]->Response(DS6_Anim.Units[i], &DS6_Anim);
+
   /* scene rendering */
   DS6_RndStart();
-  Ellipse(DS6_hRndDCFrame, 5, 5, 100, 100);
-  DS6_RndPrimDraw(&PrS, MatrIdentity());
-  DS6_RndPrimDraw(&PrP, MatrIdentity());
-  DS6_RndPrimDraw(&Pr, MatrIdentity());
-  DS6_RndPrimDraw(&PrF, MatrScale(VecSet1(0.01)));
-  DS6_RndEnd();
+  for (i = 0; i < DS6_Anim.NumOfUnits; i++)
+    DS6_Anim.Units[i]->Render(DS6_Anim.Units[i], &DS6_Anim);
 
-  Response(Anim);
-  Render(Anim);
+  DS6_RndEnd();
+}
+
+VOID DS6_AnimUnitAdd( ds6UNIT *Uni )
+{
+  if (DS6_Anim.NumOfUnits < DS6_MAX_UNITS)
+    DS6_Anim.Units[DS6_Anim.NumOfUnits++] = Uni, Uni->Init(Uni, &DS6_Anim);
 }

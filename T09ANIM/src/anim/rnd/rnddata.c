@@ -8,8 +8,8 @@
 #include "rnd.h"
 
 HWND DS6_hRndWnd;                  /* Work window handle */
-HDC DS6_hRndDCFrame;               /* Work window memory device context  */
-HBITMAP DS6_hRndBmFrame;           /* Work window background bitmap handle */
+HDC DS6_hRndDC;                    /* Work window memory device context  */
+HGLRC DS6_hRndGLRC;                /* OpenGL rendering context */
 INT DS6_RndFrameW, DS6_RndFrameH;  /* Work window size */
 
 FLT

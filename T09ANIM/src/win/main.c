@@ -7,9 +7,7 @@
 #include <windows.h>
 
 
-#include "../def.h"
-
-#include "../anim/rnd/rnd.h"
+#include "../units/units.h"
 
 /* Window class name */
 #define DS6_WND_CLASS_NAME "My Window Class Name"
@@ -65,7 +63,10 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine,
 
   ShowWindow(hWnd, CmdShow);
 
-/* Message loop */
+  /******/
+  DS6_AnimUnitAdd(DS6_UnitCreateCow());
+
+  /* Message loop */
   while (TRUE)
     if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
     {
@@ -96,8 +97,6 @@ LRESULT CALLBACK DS6_WinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam 
 {
   HDC hDC;
   PAINTSTRUCT ps;
-  static INT w, h;
-  static ds6PRIM Pr, PrP, PrS, PrF;
 
   switch (Msg)
   {
@@ -107,55 +106,24 @@ LRESULT CALLBACK DS6_WinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam 
     return 0;
 
   case WM_CREATE:
-    SetTimer(hWnd, 30, 12, NULL);
-    /*
-    DS6_RndInit(hWnd);
-    DS6_RndPrimCreate(&Pr, 3, 3);
-    Pr.V[0].P = VecSet(0, 0, 0);
-    Pr.V[1].P = VecSet(2, 0, 0);
-    Pr.V[2].P = VecSet(0, 3, 0);
-    Pr.I[0] = 0;
-    Pr.I[1] = 1;
-    Pr.I[2] = 2;
-    
-    DS6_RndPrimCreateSphere(&PrS, VecSet(0, 0, 0), 0.07, 27, 13);
-    DS6_RndPrimCreatePlane(&PrP, VecSet(-8, 0, 8), VecSet(18, 0, 0), VecSet(0, 0, -18), 8, 8);
-    DS6_RndPrimLoad(&PrF, "cow.obj");
-    */
+    SetTimer(hWnd, 30, 1, NULL);
     DS6_AnimInit(hWnd);
     return 0;
 
   case WM_SIZE:
-    /* Obtain new window width and height */
-    /* DS6_RndResize(LOWORD(lParam), HIWORD(lParam)); */
-    DS6_AnimResize(W, H);
+    DS6_AnimResize(LOWORD(lParam), HIWORD(lParam));
     SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
 
   case WM_TIMER:
-    /*DS6_RndStart();
-    \* scene rendaring *\
-    Ellipse(DS6_hRndDCFrame, 5, 5, 100, 100);
-    DS6_RndPrimDraw(&PrS, MatrIdentity());
-    DS6_RndPrimDraw(&PrP, MatrIdentity());
-    DS6_RndPrimDraw(&Pr, MatrIdentity());
-    DS6_RndPrimDraw(&PrF, MatrScale(VecSet1(0.01)));
-    DS6_RndEnd();
-    */
-    AnimRender();
-
-    hDC = GetDC(hWnd);
-    DS6_RndCopyFrame(hDC);
-    /* InvalidateRect(hWnd, NULL, FALSE); */
-    ReleaseDC(hWnd, hDC);
+    DS6_AnimRender();
+    DS6_AnimCopyFrame();
     return 0;
 
   case WM_PAINT:
-    /*
     hDC = BeginPaint(hWnd, &ps);
-    DS6_RndCopyFrame (hDC);;
+    DS6_AnimCopyFrame();
     EndPaint(hWnd, &ps);
-    */
     return 0;
 
   case WM_KEYDOWN:
@@ -175,7 +143,7 @@ LRESULT CALLBACK DS6_WinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam 
     DS6_MouseWheel += (SHORT)HIWORD(wParam);
     return 0;
 
-case WM_LBUTTONDOWN:
+  case WM_LBUTTONDOWN:
     SetCapture(hWnd);
     return 0;
 
@@ -184,14 +152,7 @@ case WM_LBUTTONDOWN:
     return 0;
 
   case WM_DESTROY:
-    /*
-    DS6_RndPrimFree(&PrF);
-    DS6_RndPrimFree(&Pr);
-    DS6_RndPrimFree(&PrS);
-    DS6_RndPrimFree(&PrP);
-    DS6_RndClose();
     KillTimer(hWnd, 30);
-    */
     DS6_AnimClose();
     PostMessage(hWnd, WM_QUIT, 0, 0);
     return 0;
