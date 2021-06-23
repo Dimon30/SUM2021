@@ -236,6 +236,14 @@
 						RelativePath=".\src\anim\rnd\rndprim.c"
 						>
 					</File>
+					<Filter
+						Name="Resource"
+						>
+						<File
+							RelativePath=".\src\anim\rnd\res\rndshd.c"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter

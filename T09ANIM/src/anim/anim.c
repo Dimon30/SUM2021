@@ -15,6 +15,7 @@ VOID DS6_AnimInit( HWND hWnd )
 
   DS6_TimerInit();
   DS6_AnimInputInit();
+
 }
 
 VOID DS6_AnimClose( VOID )

@@ -45,7 +45,7 @@ BOOL DS6_RndPrimCreate( ds6PRIM *Pr, INT NoofV, INT NoofI )
 VOID DS6_RndPrimCreate( ds6PRIM *Pr, ds6VERTEX *V, INT NumOfV, INT *I, INT NumOfI )
 {
   memset(Pr, 0, sizeof(ds6PRIM));
-
+ 
   if (V != NULL && NumOfV != 0)
   {
     glGenBuffers(1, &Pr->VBuf);
@@ -87,33 +87,58 @@ VOID DS6_RndPrimCreate( ds6PRIM *Pr, ds6VERTEX *V, INT NumOfV, INT *I, INT NumOf
 
 VOID DS6_RndPrimFree( ds6PRIM *Pr )
 {
-  if (Pr->V != NULL)
-    free(Pr->V);
+
+  glBindVertexArray(Pr->VA);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glDeleteBuffers(1, &Pr->VBuf);
+
+  glBindVertexArray(0);
+  glDeleteVertexArrays(1, &Pr->VA);
+
+  glDeleteBuffers(1, &Pr->IBuf);
+
+
   memset(Pr, 0, sizeof(ds6PRIM));
 }
 
 VOID DS6_RndPrimDraw( ds6PRIM *Pr, MATR World )
 {
-  INT i;
-  MATR wvp = MatrMulMatr3(Pr->Trans, World, DS6_RndMatrVP);
+  MATR wvp;
+  INT prg, loc;
+
+  wvp = MatrMulMatr3(Pr->Trans, World, DS6_RndMatrVP);
 
   glLoadMatrixf(wvp.A[0]);
 
+  prg = DS6_RndShaders[0].ProgId;
+  glUseProgmam(prg);
 
-  glBindVertexArray(VA);
+  if ((loc = glGetUniformLocation(prg, "MatrWVP")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, wvp.A[0]);
+  if ((loc = glGetUniformLocation(prg, "Time")) != -1)
+    glUniform1f(loc, 1, FALSE, wvp.A[0]);
 
-  glDrawArrays(GL_TRIANGLES, 0, NumOfV);
+  
+  if (Pr->IBuf == 0)
+  {
+    glBindVertexArray(Pr->VA);
+    glDrawArrays(GL_TRIANGLES, 0, Pr->NumOfElements);
+    glBindVertexArray(0);
+  }
 
-  glBindVertexArray(0);
+  else
+  {
+    glBindVertexArray(Pr->VA);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Pr->IBuf);
 
+    glDrawElements(GL_TRIANGLES, Pr->NumOfElements, GL_UNSIGNED_INT, NULL);
 
-  /* Draw triangles */
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  glBegin(GL_TRIANGLES);
-  for (i = 0; i < Pr->NumOfI; i++)
-    glVertex3fv(&Pr->V[Pr->I[i]].P.X);
-  glEnd();
+    glBindVertexArray(0);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  }
 }
+
 
 /*
 BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
@@ -306,6 +331,7 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
 } /* End of 'DS6_RndPrimLoad' function */
 
 
+#if 0
 BOOL DS6_RndPrimCreateGrid( ds6PRIM *Pr, INT SplitW, INT SplitH)
 {
   INT k, i, j;
@@ -329,7 +355,6 @@ BOOL DS6_RndPrimCreateGrid( ds6PRIM *Pr, INT SplitW, INT SplitH)
     }
   return TRUE;
 }
-
 BOOL DS6_RndPrimCreateSphere( ds6PRIM *Pr, VEC C, FLT R, INT SplitW, INT SplitH )
 {
   INT i, j;
@@ -359,4 +384,5 @@ BOOL DS6_RndPrimCreatePlane( ds6PRIM *Pr, VEC P, VEC Du, VEC Dv, INT SplitW, INT
         VecAddVec3(P, VecMulNum(Du, j / (SplitW - 1.0)), VecMulNum(Dv, i / (SplitH - 1.0)));
   return TRUE;
 }
+#endif
 /* END OF 'rndprim.c' FILE */

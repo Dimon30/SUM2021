@@ -1,4 +1,4 @@
-/* FILE NAME: ???
+/* FILE NAME: u_cow.c
  * PROGRAMMER: DS6
  * DATE: 22.06.2021
  * PURPOSE: ???.
@@ -25,6 +25,7 @@ typedef struct
 static VOID DS6_UnitInit( ds6UNIT_COW *Uni, ds6ANIM *Ani )
 {
   DS6_RndPrimLoad(&Uni->Cow, "BIN/MODELS/cow.obj");
+
 } /* End of 'DS6_UnitInit' function */
 
 /*
@@ -65,7 +66,7 @@ static VOID DS6_UnitResponse( ds6UNIT_COW *Uni, ds6ANIM *Ani )
  */
 static VOID DS6_UnitRender( ds6UNIT_COW *Uni, ds6ANIM *Ani )
 {
-  DS6_RndPrimDraw(&Uni->Cow, MatrIdentity());
+  DS6_RndPrimDraw(&Uni->Cow, MatrRotateY(-30));
 } /* End of 'DS6_UnitRender' function */
 
 /*
@@ -87,6 +88,8 @@ ds6UNIT * DS6_UnitCreateCow( VOID )
   Uni->Response = (VOID *)DS6_UnitResponse;
   Uni->Render = (VOID *)DS6_UnitRender;
   return Uni;
-}/* End of 'DS6_UnitRender' function */
+}/* End of 'DS6_UnitCreateCow' function */
+
+/* END OF 'u_cow.c' FILE */
 
 

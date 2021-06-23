@@ -254,7 +254,7 @@ __inline MATR MatrScale( VEC S )
   
   return m;
 }
-/*
+
 __inline MATR MatrRotateX( FLT AngleInDegree )
 {
   FLT a = D2R(AngleInDegree);
@@ -290,14 +290,16 @@ __inline MATR MatrRotateZ( FLT AngleInDegree )
   FLT a = D2R(AngleInDegree);
   MATR m =
   {
-    {cos(a), sin(a), 0, 0},
-    {-sin(a), cos(a), 0, 0},
-    {0, 0, 1, 0},
-    {0, 0, 0, 1}
+    {
+      {cos(a), sin(a), 0, 0},
+      {-sin(a), cos(a), 0, 0},
+      {0, 0, 1, 0},
+      {0, 0, 0, 1}
+    }
   };
   return m;
 }
-*/
+
 __inline MATR MatrRotate( FLT AngleInDegree, VEC V )
 {
   FLT a = D2R(AngleInDegree), s = sin(a), c = cos(a);

@@ -1,4 +1,4 @@
-/* FILE NAME: ???
+/* FILE NAME: input.c
  * PROGRAMMER: DS6
  * DATE: 22.06.2021
  * PURPOSE: ???.

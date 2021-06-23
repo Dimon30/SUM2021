@@ -1,7 +1,7 @@
-/* FILE NAME: ???
+/* FILE NAME: timer.c
  * PROGRAMMER: DS6
- * DATE: 22.06.2021
- * PURPOSE: ???.
+ * DATE: 21.06.2021
+ * PURPOSE: 3D math implementation module.
  */
 #include "anim.h"
 
@@ -13,16 +13,10 @@ static UINT64
   TimePerSec,   /* Timer resolution */
   FrameCounter; /* Frames counter */
 
-/* FILE NAME: timer.c
- * PROGRAMMER: DS6
- * DATE: 21.06.2021
- * PURPOSE: 3D math implementation module.
- */
-
 VOID DS6_TimerInit( VOID )
 {
 
-  LARGE_INTEGER t;	
+  LARGE_INTEGER t;
 
   QueryPerformanceFrequency(&t);
   TimePerSec = t.QuadPart;
