@@ -24,9 +24,19 @@ static VOID DS6_AnimKeyboardInit( VOID )
 }
 static VOID DS6_AnimKeyboardResponse( VOID )
 {
+  INT i;
+  
+  GetKeyboardState(DS6_Anim.Keys);
+  for (i = 0; i < 256; i++)
+  {
+    DS6_Anim.Keys[i] >>= 7;
+    DS6_Anim.KeysClick[i] = DS6_Anim.Keys[i] && !DS6_Anim.KeysOld[i];
+  }
+
+  memcpy(DS6_Anim.KeysOld, DS6_Anim.Keys, 256);
 }
 
-static VOID DS6_AnimMousenit( VOID )
+static VOID DS6_AnimMouseInit( VOID )
 {
   POINT pt;
 
@@ -87,13 +97,17 @@ static VOID DS6_AnimJoystickInit( VOID )
 }
 static VOID DS6_AnimJoysstickResponse( VOID )
 {
+  
 }
 
 
 VOID DS6_AnimInputInit( VOID )
 {
-
+  VOID DS6_AnimKeyboardInit( VOID );
+  VOID DS6_AnimMouseInit( VOID );
 }
 VOID DS6_AnimInputResponse( VOID )
 {
+  VOID DS6_AnimKeyboardResponse( VOID );
+  VOID DS6_AnimMouseResponse( VOID );
 }

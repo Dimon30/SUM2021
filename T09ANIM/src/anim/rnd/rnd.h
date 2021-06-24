@@ -8,7 +8,6 @@
 
 #define GLEW_STATIC
 /* Shaders stock maximum size */
-#define DS6_MAX_SHADERS 30
 #include <glew.h>
 
 #include "../../def.h"
@@ -62,20 +61,12 @@ typedef struct tagds6PRIM
   INT NumOfElements;
 } ds6PRIM;
 
-typedef struct tagds6SHADER
-{
-  CHAR Name[DS6_MAX_SHADERS];
-  INT ProgId;
-} ds6SHADER;
-
-/* Shadre stock array and it size */
-ds6SHADER DS6_RndShaders[DS6_MAX_SHADERS];
-INT DS6_RndShadersSize;
-
+/*
 VEC4 Vec4Set( FLT A, FLT B, FLT C, FLT D );
 VEC4 Vec4Set1( FLT A );
 VEC2 Vec2Set( FLT A, FLT B );
 VEC2 Vec2Set1( FLT A );
+*/
 
 VOID DS6_RndPrimCreate( ds6PRIM *Pr, ds6VERTEX *V, INT NumOfV, INT *I, INT NumOfI );
 
@@ -91,12 +82,6 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName );
 
 //BOOL DS6_RndPrimCreatePlane( ds6PRIM *Pr, VEC P, VEC Du, VEC Dv, INT SplitW, INT SplitH);
 
-VOID DS6_RndShdLog( CHAR *FileNamePrefix, CHAR *ShaderName, CHAR *Text );
-
-CHAR * DS6_RndLoadTextFromFile( CHAR *FileName );
-
-INT DS6_RndShdLoad( CHAR *FileNamePrefix );
-
 VOID DS6_RndShdFree( INT ProgId );
 
 VOID DS6_RndShadersInit( VOID );
@@ -107,7 +92,16 @@ INT DS6_RndShaderAdd( CHAR *FileNamePrefix );
 
 VOID DS6_RndShadersUpdate( VOID );
 
+#define DS6_STR_MAX 30
 
+typedef struct tagds6SHADER
+{
+  CHAR Name[DS6_STR_MAX];
+  INT ProgId;
+} ds6SHADER;
+
+ds6SHADER DS6_RndShaders[];
+INT DS6_RndShadersSize;
 
 #endif /* __rnd_h_*/
 

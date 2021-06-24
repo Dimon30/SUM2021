@@ -4,34 +4,15 @@
  * PURPOSE: 3D animation rendering shader handle functions module.
  */
 
+#include "../rnd.h"
+
 #include <stdio.h>
 #include <string.h>
 
-#include "../rnd.h"
 
 /***
  * Base shaders functions
  ***/
-
-/* Save log to file function.
- * ARGUMENTS:
- *   - shader prefix:
- *       CHAR *FileNamePrefix;
- *   - shader name:
- *       CHAR *ShaderName;
- *   - error text:
- *       CHAR *Text;
- * RETURNS: None.
- */
-VOID DS6_RndShdLog( CHAR *FileNamePrefix, CHAR *ShaderName, CHAR *Text )
-{
-  FILE *F;
-
-  if ((F = fopen("BIN/SHADERS/shd{30}DS6.log", "a")) == NULL)
-    return;
-  fprintf(F, "%s : %s\n%s\n\n", FileNamePrefix, ShaderName, Text);
-  fclose(F);
-} /* End of 'DS6_RndLoadTextFromFile' function */
 
 /* Load shader text from file function.
  * ARGUMENTS:
@@ -52,6 +33,7 @@ CHAR * DS6_RndLoadTextFromFile( CHAR *FileName )
   /* Measure file length */
   fseek(F, 0, SEEK_END);
   flen = ftell(F);
+  rewind(F);
 
   /* Allocate memory */
   if ((txt = malloc(flen + 1)) == NULL)
@@ -60,13 +42,33 @@ CHAR * DS6_RndLoadTextFromFile( CHAR *FileName )
     return NULL;
   }
   /* Load text */
-  rewind(F);
   memset(txt, 0, flen + 1);
   fread(txt, 1, flen, F);
 
   fclose(F);
   return txt;
 } /* End of 'DS6_RndLoadTextFromFile' function */
+
+/* Save log to file function.
+ * ARGUMENTS:
+ *   - shader prefix:
+ *       CHAR *FileNamePrefix;
+ *   - shader name:
+ *       CHAR *ShaderName;
+ *   - error text:
+ *       CHAR *Text;
+ * RETURNS: None.
+ */
+VOID DS6_RndShdLog( CHAR *FileNamePrefix, CHAR *ShaderName, CHAR *Text )
+{
+  FILE *F;
+
+  if ((F = fopen("BIN/SHADERS/shd{30}DS6.log", "a")) == NULL)
+    return;
+  fprintf(F, "%s : %s\n%s\n\n", FileNamePrefix, ShaderName, Text);
+  fclose(F);
+} /* End of 'DS6_RndShdLog' function */
+
 
 /* Load shader program function.
  * ARGUMENTS:
@@ -87,7 +89,7 @@ INT DS6_RndShdLoad( CHAR *FileNamePrefix )
     {"VERT", GL_VERTEX_SHADER, 0},
     {"FRAG", GL_FRAGMENT_SHADER, 0},
   };
-  INT NoofS = sizeof(shd) / sizeof(shd[0]), i, prg, res;
+  INT NoofS = sizeof(shd) / sizeof(shd[0]), i, prg = 0 , res;
   CHAR *txt;
   BOOL is_ok = TRUE;
   static CHAR Buf[1000];
@@ -202,13 +204,18 @@ VOID DS6_RndShdFree( INT ProgId )
  * Shaders stock functions
  ***/
 
+
+/* Shadre stock array and it size */
+
+ds6SHADER DS6_RndShaders[DS6_STR_MAX];
+
 /* Shader stock initialization function.
  * ARGUMENTS: None.
  * RETURNS: None.
  */
 VOID DS6_RndShadersInit( VOID )
 {
-  DS6_RndShadersSize = 0;
+  //DS6_RndShadersSize = 0;
   DS6_RndShaderAdd("DEFAULT");
 } /* End of 'DS6_RndShadersInit' function */
 
@@ -239,9 +246,9 @@ INT DS6_RndShaderAdd( CHAR *FileNamePrefix )
   for (i = 0; i < DS6_RndShadersSize; i++)
     if (strcmp(FileNamePrefix, DS6_RndShaders[i].Name) == 0)
       return i;
-  if (DS6_RndShadersSize >= DS6_MAX_SHADERS)
+  if (DS6_RndShadersSize >= DS6_STR_MAX)
     return 0;
-  strncpy(DS6_RndShaders[DS6_RndShadersSize].Name, FileNamePrefix, DS6_MAX_SHADERS - 1);
+  strncpy(DS6_RndShaders[DS6_RndShadersSize].Name, FileNamePrefix, DS6_STR_MAX - 1);
   DS6_RndShaders[DS6_RndShadersSize].ProgId = DS6_RndShdLoad(FileNamePrefix);
   return DS6_RndShadersSize++;
 } /* End of 'DS6_RndShadersAdd' function */

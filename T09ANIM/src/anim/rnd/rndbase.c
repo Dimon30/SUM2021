@@ -4,7 +4,7 @@
  * PURPOSE: 3D animation start up module.
  */
 
-#include "rnd.h"
+#include "../anim.h"
 #include <wglew.h>
 #include <gl/wglext.h>
 
@@ -85,6 +85,7 @@ VOID DS6_RndInit( HWND hWnd )
   /* Set default OpenGL parameters */
   glEnable(GL_DEPTH_TEST);
   glClearColor(0.30f, 0.47f, 0.8, 1);
+  DS6_RndShadersInit();
 
   DS6_RndProjSize = 0.1,
   DS6_RndProjDist = 0.1,
@@ -97,6 +98,7 @@ VOID DS6_RndInit( HWND hWnd )
 
 VOID DS6_RndClose( VOID )
 {
+  DS6_RndShadersClose();
   wglMakeCurrent(NULL, NULL);
   wglDeleteContext(DS6_hRndGLRC);
   ReleaseDC(DS6_hRndWnd, DS6_hRndDC);
@@ -122,6 +124,13 @@ VOID DS6_RndCopyFrame( VOID )
 
 VOID DS6_RndStart( VOID )
 {
+  static DBL load = 0;
+
+  if ((load += DS6_Anim.GlobalDeltaTime) > 1)
+  {
+    load = 0;
+    DS6_RndShadersUpdate();
+  }
   /* Clear frame */
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }

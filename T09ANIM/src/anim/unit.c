@@ -44,6 +44,10 @@ static VOID DS6_UnitClose( ds6UNIT *Uni, ds6ANIM *Ani )
  */
 static VOID DS6_UnitResponse( ds6UNIT *Uni, ds6ANIM *Ani )
 {
+
+  //Uni->CamLoc = PointTransform(Uni->CamLoc, MatrRotateY(Ani->DeltaTime * Uni->AngleSpeed * Ani->Mdx));
+  Uni->CamLoc = VecAddVec(Uni->CamLoc, VecMulNum(Uni->CamDir, Ani->DeltaTime * Uni->Speed * (Ani->Keys[VK_UP] - Ani->Keys[VK_DOWN])));
+  //DS6_RndCamSet(Uni->CamLoc, Uni->At, VecSet(0, 1, 0));
 } /* End of 'DS6_UnitResponse' function */
 
 /*

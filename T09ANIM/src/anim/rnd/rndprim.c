@@ -104,21 +104,20 @@ VOID DS6_RndPrimFree( ds6PRIM *Pr )
 VOID DS6_RndPrimDraw( ds6PRIM *Pr, MATR World )
 {
   MATR wvp;
-  INT prg, loc;
+  INT ProgId, loc;
 
   wvp = MatrMulMatr3(Pr->Trans, World, DS6_RndMatrVP);
 
   glLoadMatrixf(wvp.A[0]);
 
-  prg = DS6_RndShaders[0].ProgId;
-  glUseProgmam(prg);
+  ProgId = DS6_RndShaders[0].ProgId;
+  glUseProgram(ProgId);
 
-  if ((loc = glGetUniformLocation(prg, "MatrWVP")) != -1)
+  if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, wvp.A[0]);
-  if ((loc = glGetUniformLocation(prg, "Time")) != -1)
+  if ((loc = glGetUniformLocation(ProgId, "Time")) != -1)
     glUniform1f(loc, 1, FALSE, wvp.A[0]);
 
-  
   if (Pr->IBuf == 0)
   {
     glBindVertexArray(Pr->VA);
@@ -229,6 +228,7 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
 {
   FILE *F;
   INT i, nv = 0, nind = 0, size;
+  FLT nl, N;
   ds6VERTEX *V;
   INT *Ind;
   static CHAR Buf[1000];
@@ -268,7 +268,7 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
     if (Buf[0] == 'v' && Buf[1] == ' ')
     {
       DBL x, y, z;
-      VEC4 c = {220, 220, 60, 1};
+      VEC4 c = {1, 1, 1, 1};
 
       sscanf(Buf + 2, "%lf%lf%lf", &x, &y, &z);
       V[nv].C = c;
@@ -302,9 +302,7 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
         }
     }
   }
-  fclose(F);
-  DS6_RndPrimCreate(Pr, V, nv, Ind, nind);
-  /*
+#if 0
   for (i = 0; i < NumOfV; i++)
      V[i].N = VecSet(0, 0, 0);
   for (i = 0; i < NumOfI; i += 3)
@@ -315,7 +313,7 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
        p2 = V[Ind[i + 2]].P,
        N = VecNormalize(VecCrossVec(VecSubVec(p1, p0), VecSubVec(p2, p0)));
 
-     V[Ind[i]].N = VecAddVec(V[Ind[i]].N, N); \* VecAddVecEq(&V[Ind[i]].N, N); *\
+     V[Ind[i]].N = VecAddVec(V[Ind[i]].N, N); /* VecAddVecEq(&V[Ind[i]].N, N); */
      V[Ind[i + 1]].N = VecAddVec(V[Ind[i + 1]].N, N);
      V[Ind[i + 2]].N = VecAddVec(V[Ind[i + 2]].N, N);
    }
@@ -324,8 +322,10 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
   nl = VecDotVec(V[i].N, L);
   if (nl < 0.1)
     nl = 0.1;
-  V[i].C = Vec4Set(r * nl, g * nl, b * nl, 1);
-  */
+  V[i].C = Vec4Set(200 * nl, 120 * nl, 100 * nl, 1);
+#endif
+  fclose(F);
+  DS6_RndPrimCreate(Pr, V, nv, Ind, nind);
   free(V);
   return TRUE;
 } /* End of 'DS6_RndPrimLoad' function */

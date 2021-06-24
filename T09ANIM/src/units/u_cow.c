@@ -66,7 +66,7 @@ static VOID DS6_UnitResponse( ds6UNIT_COW *Uni, ds6ANIM *Ani )
  */
 static VOID DS6_UnitRender( ds6UNIT_COW *Uni, ds6ANIM *Ani )
 {
-  DS6_RndPrimDraw(&Uni->Cow, MatrRotateY(-30));
+  DS6_RndPrimDraw(&Uni->Cow, MatrRotateY(-30 * Ani->Time));
 } /* End of 'DS6_UnitRender' function */
 
 /*
@@ -74,7 +74,7 @@ static VOID DS6_UnitRender( ds6UNIT_COW *Uni, ds6ANIM *Ani )
  * ARGUMENTS: None.
  * RETURNS: 
      (ds6UNIT *) pointer to created unit.
- */
+*/
 ds6UNIT * DS6_UnitCreateCow( VOID )
 {
   ds6UNIT *Uni;

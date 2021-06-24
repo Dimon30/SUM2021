@@ -48,6 +48,7 @@ typedef struct tagds6ANIM
 struct tagds6UNIT
 {
   DS6_UNIT_BASE_FIELDS;
+  CamLoc
 };
 
 extern ds6ANIM DS6_Anim;
