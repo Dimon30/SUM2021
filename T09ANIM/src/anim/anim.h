@@ -48,7 +48,6 @@ typedef struct tagds6ANIM
 struct tagds6UNIT
 {
   DS6_UNIT_BASE_FIELDS;
-  CamLoc
 };
 
 extern ds6ANIM DS6_Anim;
@@ -66,7 +65,7 @@ VOID DS6_AnimRender( VOID );
  *   - unit structure size in bytes:
  *      INT Size;
  * RETURNS: 
-     (ds6UNIT *) pointer to created unit.
+ *   (ds6UNIT *) pointer to created unit.
  */
 ds6UNIT * DS6_AnimUnitCreate( INT Size );
 
@@ -79,5 +78,8 @@ VOID DS6_TimerResponse( VOID );
 
 VOID DS6_AnimInputInit( VOID );
 VOID DS6_AnimInputResponse( VOID );
+
+//BOOL DS6_RndPrimsCreate( ds6PRIMS *Prs, INT NumOfPrims );
+//VOID DS6_RndPrimsFree( ds6PRIMS *Prs );
 
 #endif

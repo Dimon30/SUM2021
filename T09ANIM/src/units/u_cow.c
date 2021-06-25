@@ -24,7 +24,7 @@ typedef struct
  */
 static VOID DS6_UnitInit( ds6UNIT_COW *Uni, ds6ANIM *Ani )
 {
-  DS6_RndPrimLoad(&Uni->Cow, "BIN/MODELS/cow.obj");
+  DS6_RndPrimsLoad(&Uni->Cow, "BIN/MODELS/a.g3dm");
 
 } /* End of 'DS6_UnitInit' function */
 
@@ -39,7 +39,7 @@ static VOID DS6_UnitInit( ds6UNIT_COW *Uni, ds6ANIM *Ani )
  */
 static VOID DS6_UnitClose( ds6UNIT_COW *Uni, ds6ANIM *Ani )
 {
-  DS6_RndPrimFree(&Uni->Cow);
+  DS6_RndPrimsFree(&Uni->Cow);
 } /* End of 'DS6_UnitClose' function */
 
 /*
@@ -66,7 +66,7 @@ static VOID DS6_UnitResponse( ds6UNIT_COW *Uni, ds6ANIM *Ani )
  */
 static VOID DS6_UnitRender( ds6UNIT_COW *Uni, ds6ANIM *Ani )
 {
-  DS6_RndPrimDraw(&Uni->Cow, MatrRotateY(-30 * Ani->Time));
+  DS6_RndPrimsDraw(&Uni->Cow, MatrRotateY(-30 * Ani->Time));
 } /* End of 'DS6_UnitRender' function */
 
 /*

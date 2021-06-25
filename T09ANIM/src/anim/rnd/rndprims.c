@@ -4,10 +4,13 @@
  * PURPOSE: 3D animation primitive collection handle module.
  */
 
+#include "res/rndres.h"
+
 #include <stdio.h>
 #include <string.h>
 
-#include "../anim.h"
+
+#include "rndprims.h"
 
 /***
  * Primitive collection support
@@ -24,7 +27,7 @@
  */
 BOOL DS6_RndPrimsCreate( ds6PRIMS *Prs, INT NumOfPrims )
 {
-  memset(Prs, 0, sizeof(DS6PRIMS));
+  memset(Prs, 0, sizeof(ds6PRIMS));
 
   if ((Prs->Prims = malloc(sizeof(ds6PRIM) * NumOfPrims)) == NULL)
     return FALSE;
@@ -194,6 +197,6 @@ BOOL DS6_RndPrimsLoad( ds6PRIMS *Prs, CHAR *FileName )
 
   free(mem);
   return TRUE;
-} /* End of 'DS6_RndPrimsDraw' function */
+} /* End of 'DS6_RndPrimsLoad' function */
 
 /* END OF 'rndprims.c' FILE */

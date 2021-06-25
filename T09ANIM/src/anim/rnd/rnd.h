@@ -59,7 +59,16 @@ typedef struct tagds6PRIM
   INT VA;
   INT IBuf;
   INT NumOfElements;
+  INT MtlNo;
 } ds6PRIM;
+/* Primitive type */
+typedef enum tagds6PRIM_TYPE
+{
+  DS6_RND_PRIM_TRIMESH,  /* Triangle mesh - array of triangles */
+  DS6_RND_PRIM_TRISTRIP, /* Triangle strip - array of stripped triangles */
+  DS6_RND_PRIM_LINES,    /* Line segments (by 2 points) */
+  DS6_RND_PRIM_POINTS,   /* Arrauy of points */
+} ds6PRIM_TYPE;
 
 /*
 VEC4 Vec4Set( FLT A, FLT B, FLT C, FLT D );
@@ -82,26 +91,9 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName );
 
 //BOOL DS6_RndPrimCreatePlane( ds6PRIM *Pr, VEC P, VEC Du, VEC Dv, INT SplitW, INT SplitH);
 
-VOID DS6_RndShdFree( INT ProgId );
 
-VOID DS6_RndShadersInit( VOID );
 
-VOID DS6_RndShadersClose( VOID );
-
-INT DS6_RndShaderAdd( CHAR *FileNamePrefix );
-
-VOID DS6_RndShadersUpdate( VOID );
-
-#define DS6_STR_MAX 30
-
-typedef struct tagds6SHADER
-{
-  CHAR Name[DS6_STR_MAX];
-  INT ProgId;
-} ds6SHADER;
-
-ds6SHADER DS6_RndShaders[];
-INT DS6_RndShadersSize;
+/* Material store type */
 
 #endif /* __rnd_h_*/
 

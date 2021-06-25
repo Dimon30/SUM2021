@@ -55,14 +55,13 @@ VOID DS6_RndPrimCreate( ds6PRIM *Pr, ds6VERTEX *V, INT NumOfV, INT *I, INT NumOf
     glBindBuffer(GL_ARRAY_BUFFER, Pr->VBuf);
     glBufferData(GL_ARRAY_BUFFER, sizeof(ds6VERTEX) * NumOfV, V, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, FALSE, sizeof(ds6VERTEX),
-                          (VOID *)0); /* position */
-    glVertexAttribPointer(1, 2, GL_FLOAT, FALSE, sizeof(ds6VERTEX),
-                          (VOID *)sizeof(VEC)); /* texture coordinates */
-    glVertexAttribPointer(2, 3, GL_FLOAT, FALSE, sizeof(ds6VERTEX),
-                          (VOID *)(sizeof(VEC) + sizeof(VEC2))); /* normal */
-    glVertexAttribPointer(3, 4, GL_FLOAT, FALSE, sizeof(ds6VERTEX),
-                          (VOID *)(sizeof(VEC) * 2 + sizeof(VEC2))); /* color */
+    glVertexAttribPointer(0, 3, GL_FLOAT, FALSE, sizeof(ds6VERTEX), (VOID *)0);                                 /* position */
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, FALSE, sizeof(ds6VERTEX), (VOID *)sizeof(VEC));                       /* texture coordinates */
+
+    glVertexAttribPointer(2, 3, GL_FLOAT, FALSE, sizeof(ds6VERTEX), (VOID *)(sizeof(VEC) + sizeof(VEC2)));      /* normal */
+
+    glVertexAttribPointer(3, 4, GL_FLOAT, FALSE, sizeof(ds6VERTEX), (VOID *)(sizeof(VEC) * 2 + sizeof(VEC2)));  /* color */
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -103,20 +102,38 @@ VOID DS6_RndPrimFree( ds6PRIM *Pr )
 
 VOID DS6_RndPrimDraw( ds6PRIM *Pr, MATR World )
 {
-  MATR wvp;
+  //MATR wvp;
+  MATR
+    w = MatrMulMatr(Pr->Trans, World),
+    winv = MatrTranspose(MatrInverse(w)),
+    wvp = MatrMulMatr(w, DS6_RndMatrVP);
+  
   INT ProgId, loc;
 
-  wvp = MatrMulMatr3(Pr->Trans, World, DS6_RndMatrVP);
+  //wvp = MatrMulMatr3(Pr->Trans, World, DS6_RndMatrVP);
 
   glLoadMatrixf(wvp.A[0]);
 
-  ProgId = DS6_RndShaders[0].ProgId;
+  ProgId = DS6_RndMtlApply(Pr->MtlNo);
   glUseProgram(ProgId);
 
-  if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
-    glUniformMatrix4fv(loc, 1, FALSE, wvp.A[0]);
+  //if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
+    //glUniformMatrix4fv(loc, 1, FALSE, wvp.A[0]);
   if ((loc = glGetUniformLocation(ProgId, "Time")) != -1)
     glUniform1f(loc, 1, FALSE, wvp.A[0]);
+
+   /* Pass render uniforms */
+  if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, wvp.A[0]);
+  if ((loc = glGetUniformLocation(ProgId, "MatrW")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, w.A[0]);
+  if ((loc = glGetUniformLocation(ProgId, "MatrWInv")) != -1)
+    glUniformMatrix4fv(loc, 1, FALSE, winv.A[0]);
+  if ((loc = glGetUniformLocation(ProgId, "CamLoc")) != -1) 
+  {
+    VEC DS6_RndCamLoc;
+    glUniform3fv(loc, 1, &DS6_RndCamLoc.X);
+  }
 
   if (Pr->IBuf == 0)
   {
@@ -302,6 +319,7 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
         }
     }
   }
+  fclose(F);
 #if 0
   for (i = 0; i < NumOfV; i++)
      V[i].N = VecSet(0, 0, 0);
@@ -323,9 +341,8 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
   if (nl < 0.1)
     nl = 0.1;
   V[i].C = Vec4Set(200 * nl, 120 * nl, 100 * nl, 1);
-#endif
-  fclose(F);
   DS6_RndPrimCreate(Pr, V, nv, Ind, nind);
+#endif
   free(V);
   return TRUE;
 } /* End of 'DS6_RndPrimLoad' function */

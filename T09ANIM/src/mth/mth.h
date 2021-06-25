@@ -337,7 +337,16 @@ __inline MATR MatrMulMatr3( MATR M1, MATR M2 , MATR M3)
   return r;
 }
 
-__inline MATR MatrTranspose( MATR M );
+__inline MATR MatrTranspose( MATR M )
+{
+  INT i, j;
+  MATR r = {{{0}}};
+
+  for (i = 0; i < 4; i++)
+    for (j = 0; j < 4; j++)
+      r.A[i][j] = M.A[j][i];
+  return r;
+}
 
 __inline FLT MatrDeterm3x3( FLT A11, FLT A12, FLT A13,
                    FLT A21, FLT A22, FLT A23,

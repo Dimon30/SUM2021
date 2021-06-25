@@ -1,3 +1,5 @@
+#include "../anim.h"
+
 /***
  * Primitive collection support
  ***/

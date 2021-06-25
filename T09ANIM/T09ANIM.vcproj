@@ -248,11 +248,19 @@
 						Name="Resource"
 						>
 						<File
+							RelativePath=".\src\anim\rnd\res\rndmtl.c"
+							>
+						</File>
+						<File
+							RelativePath=".\src\anim\rnd\res\rndres.h"
+							>
+						</File>
+						<File
 							RelativePath=".\src\anim\rnd\res\rndshd.c"
 							>
 						</File>
 						<File
-							RelativePath=".\src\anim\rnd\res\rndtxt.c"
+							RelativePath=".\src\anim\rnd\res\rndtex.c"
 							>
 						</File>
 					</Filter>

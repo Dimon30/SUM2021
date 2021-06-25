@@ -5,6 +5,7 @@
  */
 
 #include "../rnd.h"
+#include "rndres.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -207,7 +208,7 @@ VOID DS6_RndShdFree( INT ProgId )
 
 /* Shadre stock array and it size */
 
-ds6SHADER DS6_RndShaders[DS6_STR_MAX];
+ds6SHADER DS6_RndShaders[];
 
 /* Shader stock initialization function.
  * ARGUMENTS: None.
