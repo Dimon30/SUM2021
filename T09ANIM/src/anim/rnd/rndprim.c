@@ -6,27 +6,7 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "rnd.h"
-
-#if 0
-BOOL DS6_RndPrimCreate( ds6PRIM *Pr, INT NoofV, INT NoofI )
-{
-  INT size;
-
-  memset(Pr, 0, sizeof(ds6PRIM));   /* <-- <string.h> */
-  size = sizeof(ds6VERTEX) * NoofV + sizeof(INT) * NoofI;
-
-  if ((Pr->V = malloc(size)) == NULL)
-    return FALSE;
-  Pr->I = (INT *)(Pr->V + NoofV);
-  Pr->NumOfV = NoofV;
-  Pr->NumOfI = NoofI;
-  Pr->Trans = MatrIdentity();
-  memset(Pr->V, 0, size);
-
-  return TRUE;
-}/*  End of 'RndPrimCreate' function */
-#endif
+#include "../anim.h"
 
 /* Primitive creation function.
  * ARGUMENTS:
@@ -42,7 +22,7 @@ BOOL DS6_RndPrimCreate( ds6PRIM *Pr, INT NoofV, INT NoofI )
  *       INT NumOfI;
  * RETURNS: None.
  */
-VOID DS6_RndPrimCreate( ds6PRIM *Pr, ds6VERTEX *V, INT NumOfV, INT *I, INT NumOfI )
+VOID DS6_RndPrimCreate( ds6PRIM *Pr, ds6PRIM_TYPE Type, ds6VERTEX *V , INT NumOfV, INT *I, INT NumOfI )
 {
   memset(Pr, 0, sizeof(ds6PRIM));
  
@@ -115,14 +95,8 @@ VOID DS6_RndPrimDraw( ds6PRIM *Pr, MATR World )
   glLoadMatrixf(wvp.A[0]);
 
   ProgId = DS6_RndMtlApply(Pr->MtlNo);
-  glUseProgram(ProgId);
 
-  //if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
-    //glUniformMatrix4fv(loc, 1, FALSE, wvp.A[0]);
-  if ((loc = glGetUniformLocation(ProgId, "Time")) != -1)
-    glUniform1f(loc, 1, FALSE, wvp.A[0]);
-
-   /* Pass render uniforms */
+  /* Pass render uniforms */
   if ((loc = glGetUniformLocation(ProgId, "MatrWVP")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, wvp.A[0]);
   if ((loc = glGetUniformLocation(ProgId, "MatrW")) != -1)
@@ -130,10 +104,7 @@ VOID DS6_RndPrimDraw( ds6PRIM *Pr, MATR World )
   if ((loc = glGetUniformLocation(ProgId, "MatrWInv")) != -1)
     glUniformMatrix4fv(loc, 1, FALSE, winv.A[0]);
   if ((loc = glGetUniformLocation(ProgId, "CamLoc")) != -1) 
-  {
-    VEC DS6_RndCamLoc;
     glUniform3fv(loc, 1, &DS6_RndCamLoc.X);
-  }
 
   if (Pr->IBuf == 0)
   {
@@ -156,81 +127,7 @@ VOID DS6_RndPrimDraw( ds6PRIM *Pr, MATR World )
 }
 
 
-/*
-BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
-{
-  FILE *F;
-  INT i, nv = 0, nind = 0;
-  static CHAR Buf[1000];
 
-  memset(Pr, 0, sizeof(ds6PRIM));
-  if ((F = fopen(FileName, "r")) == NULL)
-    return FALSE;
-
-  while (fgets(Buf, sizeof(Buf) - 1, F) != NULL)
-  {
-    if (Buf[0] == 'v' && Buf[1] == ' ')
-      nv++;
-    else if (Buf[0] == 'f' && Buf[1] == ' ')
-    {
-      INT n = 0;
-
-      for (i = 0; Buf[i] != 0; i++)
-        if(Buf[i - 1] == ' ' && Buf[i] != ' ')
-          n++;
-      nind += (n - 2) * 3;
-    }
-  }
-
-  if (!DS6_RndPrimCreate(Pr, nv, nind))
-  {
-    fclose(F);
-    return FALSE;
-  }
-
-  rewind(F);
-  nv = 0;
-  nind = 0;
-  while (fgets(Buf, sizeof(Buf) - 1, F) != NULL)
-  {
-    if (Buf[0] == 'v' && Buf[1] == ' ')
-    {
-      DBL x, y, z;
-
-      sscanf(Buf + 2, "%lf%lf%lf", &x, &y, &z);
-      Pr->V[nv++].P = VecSet(x, y, z);
-    }
-    else if (Buf[0] == 'f' && Buf[1] == ' ')
-    {
-      INT n = 0, n0, n1, nc;
-
-      for (i = 0; Buf[i] != 0; i++)
-        if (Buf[i - 1] == ' ' && Buf[i] != ' ')
-        {
-
-          sscanf(Buf + i, "%i", &nc);
-          nc--;
-
-          if (n == 0)
-            n0 = nc;
-          else if (n == 1)
-            n1 = nc;
-          else 
-          {
-            Pr->I[nind++] = n0;
-            Pr->I[nind++] = n1;
-            Pr->I[nind++] = nc;
-            n1 = nc;
-          }
-          n++;
-        }
-    }
-  }
-  
-  fclose(F);
-  return TRUE;
-}
-*/
 
 /* Load primitive from '*.OBJ' file function.
  * ARGUMENTS:
@@ -245,7 +142,6 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
 {
   FILE *F;
   INT i, nv = 0, nind = 0, size;
-  FLT nl, N;
   ds6VERTEX *V;
   INT *Ind;
   static CHAR Buf[1000];
@@ -320,10 +216,10 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
     }
   }
   fclose(F);
-#if 0
-  for (i = 0; i < NumOfV; i++)
+
+  for (i = 0; i < nv; i++)
      V[i].N = VecSet(0, 0, 0);
-  for (i = 0; i < NumOfI; i += 3)
+  for (i = 0; i < nind; i += 3)
    {
      VEC
        p0 = V[Ind[i]].P,
@@ -335,71 +231,14 @@ BOOL DS6_RndPrimLoad( ds6PRIM *Pr, CHAR *FileName )
      V[Ind[i + 1]].N = VecAddVec(V[Ind[i + 1]].N, N);
      V[Ind[i + 2]].N = VecAddVec(V[Ind[i + 2]].N, N);
    }
-  for (i = 0; i < NumOfV; i++)
+  for (i = 0; i < nv; i++)
      V[i].N = VecNormalize(V[i].N);
-  nl = VecDotVec(V[i].N, L);
-  if (nl < 0.1)
-    nl = 0.1;
-  V[i].C = Vec4Set(200 * nl, 120 * nl, 100 * nl, 1);
-  DS6_RndPrimCreate(Pr, V, nv, Ind, nind);
-#endif
+  //nl = VecDotVec(V[i].N, L);
+  //V[i].C = Vec4Set(200 * nl, 120 * nl, 100 * nl, 1);
+  DS6_RndPrimCreate(Pr, DS6_RND_PRIM_TRIMESH, V, nv, Ind, nind);
+
   free(V);
   return TRUE;
 } /* End of 'DS6_RndPrimLoad' function */
 
-
-#if 0
-BOOL DS6_RndPrimCreateGrid( ds6PRIM *Pr, INT SplitW, INT SplitH)
-{
-  INT k, i, j;
-  
-#if 0
-  if(DS6_RndPrimCreate(Pr, Pr->V, SplitW * SplitH, Pr->I, (SplitW - 1) * (SplitH - 1) * 6) == 0)
-    /* VOID DS6_RndPrimCreate( ds6PRIM *Pr, ds6VERTEX *V, INT NumOfV, INT *I, INT NumOfI ) */
-    return FALSE;
-#endif
-
-  for(k = 0, i = 0; i < SplitH - 1; i++)
-    for(j = 0; j < SplitW - 1; j++)
-    {
-      Pr->I[k++] = i * SplitW + j;
-      Pr->I[k++] = i * SplitW + j + 1;
-      Pr->I[k++] = (i + 1) * SplitW + j;
-
-      Pr->I[k++] = (i + 1) * SplitW + j;
-      Pr->I[k++] = i * SplitW + j + 1;
-      Pr->I[k++] = (i + 1) * SplitW + j + 1;
-    }
-  return TRUE;
-}
-BOOL DS6_RndPrimCreateSphere( ds6PRIM *Pr, VEC C, FLT R, INT SplitW, INT SplitH )
-{
-  INT i, j;
-  FLT theta, phi;
-
-  if (!DS6_RndPrimCreateGrid(Pr, SplitW, SplitH))
-    return FALSE;
-  for (theta = 0, i = 0; i < SplitH; i++, theta += PI / (SplitH - 1))
-    for (phi = 0, j = 0; j < SplitW; j++, phi += 2 * PI / (SplitW - 1))
-      Pr->V[i * SplitW + j].P =
-        VecSet(C.X + R * sin(theta) * sin(phi),
-               C.Y + R * cos(theta),
-               C.Z + R * sin(theta) * cos(phi));
-  return TRUE;
-}
-
-BOOL DS6_RndPrimCreatePlane( ds6PRIM *Pr, VEC P, VEC Du, VEC Dv, INT SplitW, INT SplitH)
-{
-  INT i, j;
-
-  if (!DS6_RndPrimCreateGrid(Pr, SplitW, SplitH))
-    return FALSE;
-
-  for (i = 0; i < SplitH; i++)
-    for (j = 0; j < SplitW; j++)
-      Pr->V[i * SplitW + j].P =
-        VecAddVec3(P, VecMulNum(Du, j / (SplitW - 1.0)), VecMulNum(Dv, i / (SplitH - 1.0)));
-  return TRUE;
-}
-#endif
 /* END OF 'rndprim.c' FILE */

@@ -4,13 +4,12 @@
  * PURPOSE: 3D animation primitive collection handle module.
  */
 
-#include "res/rndres.h"
-
 #include <stdio.h>
 #include <string.h>
 
+#include "rnd.h"
 
-#include "rndprims.h"
+
 
 /***
  * Primitive collection support
@@ -162,6 +161,7 @@ BOOL DS6_RndPrimsLoad( ds6PRIMS *Prs, CHAR *FileName )
     Ind = (INT *)ptr;
     ptr += sizeof(INT) * NumOfFacetIndexes;
     DS6_RndPrimCreate(&Prs->Prims[p], DS6_RND_PRIM_TRIMESH, V, NumOfVertexes, Ind, NumOfFacetIndexes);
+    /* DS6_RndPrimCreate( ds6PRIM *Pr, ds6VERTEX *V, INT NumOfV, INT *I, INT NumOfI ) */
     Prs->Prims[p].MtlNo = DS6_RndMaterialsSize + MtlNo;
   }
 

@@ -65,7 +65,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine,
 
   /******/
   DS6_AnimUnitAdd(DS6_UnitCreateCow());
-
+  DS6_AnimUnitAdd(DS6_UnitCreateControl());
   /* Message loop */
   while (TRUE)
     if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))

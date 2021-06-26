@@ -10,7 +10,7 @@
 typedef struct
 {
   DS6_UNIT_BASE_FIELDS;
-  ds6PRIM Cow;
+  ds6PRIMS Cow;
 } ds6UNIT_COW;
 
 /*
@@ -53,6 +53,8 @@ static VOID DS6_UnitClose( ds6UNIT_COW *Uni, ds6ANIM *Ani )
  */
 static VOID DS6_UnitResponse( ds6UNIT_COW *Uni, ds6ANIM *Ani )
 {
+
+
 } /* End of 'DS6_UnitResponse' function */
 
 /*
@@ -66,7 +68,7 @@ static VOID DS6_UnitResponse( ds6UNIT_COW *Uni, ds6ANIM *Ani )
  */
 static VOID DS6_UnitRender( ds6UNIT_COW *Uni, ds6ANIM *Ani )
 {
-  DS6_RndPrimsDraw(&Uni->Cow, MatrRotateY(-30 * Ani->Time));
+  DS6_RndPrimsDraw(&Uni->Cow, MatrIdentity());
 } /* End of 'DS6_UnitRender' function */
 
 /*

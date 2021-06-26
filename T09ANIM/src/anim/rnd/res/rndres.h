@@ -1,4 +1,7 @@
-#include "../../anim.h"
+#ifndef __rndres_h_
+#define __rndres_h_
+
+#include "../../../def.h"
 
 #define DS6_STR_MAX  300
 
@@ -37,32 +40,34 @@ typedef struct tagds6MATERIAL
 } ds6MATERIAL;
 
 
-  VOID DS6_RndResInit( VOID );
-  VOID DS6_RndResClose( VOID );
-  ds6SHADER DS6_RndShaders[DS6_MAX_SHADERS];
-  INT DS6_RndShadersSize;
+VOID DS6_RndResInit( VOID );
+VOID DS6_RndResClose( VOID );
+extern ds6SHADER DS6_RndShaders[DS6_MAX_SHADERS];
+extern INT DS6_RndShadersSize;
 
-  INT DS6_RndShaderAdd( CHAR *FileNamePrefix );
-  VOID DS6_RndShadersUpdate( VOID );
-  VOID RndShdFree( INT ShdNo );
-  VOID DS6_RndShadersInit( VOID );
-  VOID DS6_RndShadersClose( VOID );
+INT DS6_RndShaderAdd( CHAR *FileNamePrefix );
+VOID DS6_RndShadersUpdate( VOID );
+VOID RndShdFree( INT ShdNo );
+VOID DS6_RndShadersInit( VOID );
+VOID DS6_RndShadersClose( VOID );
 
-  ds6TEXTURE DS6_RndTextures[DS6_MAX_TEXTURES]; /* Array of textures */
-  INT DS6_RndTexturesSize;                    /* Textures array store size */
+extern ds6TEXTURE DS6_RndTextures[DS6_MAX_TEXTURES]; /* Array of textures */
+extern INT DS6_RndTexturesSize;                      /* Textures array store size */
 
-  INT DS6_RndTexAddImg( CHAR *Name, INT W, INT H, INT C, VOID *Bits );
-  INT DS6_RndTexAdd( CHAR *FileName );
+INT DS6_RndTexAddImg( CHAR *Name, INT W, INT H, INT C, VOID *Bits );
+INT DS6_RndTexAdd( CHAR *FileName );
 
-  VOID DS6_RndTextureDelete( INT TexNo );
-  DS6_RndTexInit( VOID );
-  DS6_RndTexClose( VOID );
+VOID DS6_RndTextureDelete( INT TexNo );
+VOID DS6_RndTexInit( VOID );
+VOID DS6_RndTexClose( VOID );
 
-  /* Material stock */
-  ds6MATERIAL DS6_RndMaterials[DS6_MAX_MATERIALS]; /* Array of materials */
-  INT DS6_RndMaterialsSize;                        /* Materials array store size */
+/* Material stock */
+extern ds6MATERIAL DS6_RndMaterials[DS6_MAX_MATERIALS]; /* Array of materials */
+extern INT DS6_RndMaterialsSize;                        /* Materials array store size */
 
-  INT DS6_RndMtllAdd( ds6MATERIAL *Mtl ); 
-  INT DS6_RndMtlApply( INT MtlNo );
-  VOID DS6_RndMtlInit( VOID );
-  VOID DS6_RndMtlClose( VOID );
+INT DS6_RndMtlAdd( ds6MATERIAL *Mtl ); 
+INT DS6_RndMtlApply( INT MtlNo );
+VOID DS6_RndMtlInit( VOID );
+VOID DS6_RndMtlClose( VOID );
+
+#endif /* __rndres_h_ */

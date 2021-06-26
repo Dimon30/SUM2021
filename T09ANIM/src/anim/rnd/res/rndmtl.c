@@ -1,4 +1,32 @@
-#include "rndres.h"
+#include "../../anim.h"
+
+ds6MATERIAL DS6_RndMaterials[DS6_MAX_MATERIALS]; /* Array of materials */
+INT DS6_RndMaterialsSize;
+
+VOID DS6_RndMtlInit( VOID )
+{
+  INT i;
+  ds6MATERIAL mtl = {{0}};
+
+  DS6_RndMaterialsSize = 0;
+
+  strcpy(mtl.Name, "DEFAULT");
+  mtl.Ka = VecSet1(0.1);
+  mtl.Kd = VecSet1(1);
+  mtl.Ks = VecSet1(0.0);
+  mtl.Ph = 30;
+  mtl.Trans = 1;
+  mtl.ShdNo = 0;
+  for (i = 0; i < 8; i++)
+    mtl.Tex[i] = -1;
+
+  DS6_RndMtlAdd(&mtl);
+}
+
+VOID DS6_RndMtlClose( VOID )
+{
+  DS6_RndMaterialsSize = 0;
+}
 
 INT DS6_RndMtlApply( INT MtlNo )
 {
@@ -24,11 +52,13 @@ INT DS6_RndMtlApply( INT MtlNo )
     glUniform1f(loc, DS6_Anim.GlobalTime);
   if ((loc = glGetUniformLocation(prg, "Ka")) != -1)
     glUniform3fv(loc, 1, &mtl->Ka.X);
-/* ***** */
+  if ((loc = glGetUniformLocation(prg, "Kd")) != -1)
+    glUniform3fv(loc, 1, &mtl->Kd.X);
+  if ((loc = glGetUniformLocation(prg, "Ks")) != -1)
+    glUniform3fv(loc, 1, &mtl->Ks.X);
   if ((loc = glGetUniformLocation(prg, "Ph")) != -1)
     glUniform1f(loc, mtl->Ph);
 
-/* ***** */
   /* Set textures */
   for (i = 0; i < 8; i++)
   {
@@ -48,14 +78,8 @@ INT DS6_RndMtlApply( INT MtlNo )
 
 INT DS6_RndMtlAdd( ds6MATERIAL *Mtl )
 {
-  INT i;
-
-  for (i = 0; i < DS6_RndMaterialsSize; i++)
-    if (strcmp(Mtl, DS6_RndMaterials[i].Name) == 0)
-      return i;
-  if (DS6_RndShadersSize >= DS6_STR_MAX)
-    return 0;
-  //strncpy(DS6_RndMaterials[DS6_RndMaterialsSize].Name, FileNamePrefix, DS6_STR_MAX - 1);
-  //DS6_RndMaterials[DS6_RndMaterialsSize].ProgId = DS6_RndShdLoad(FileNamePrefix);
+  if (DS6_RndMaterialsSize >= DS6_STR_MAX)
+    return -1;
+  DS6_RndMaterials[DS6_RndMaterialsSize] = *Mtl;
   return DS6_RndMaterialsSize++;
 }

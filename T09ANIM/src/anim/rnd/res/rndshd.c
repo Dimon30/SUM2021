@@ -4,8 +4,8 @@
  * PURPOSE: 3D animation rendering shader handle functions module.
  */
 
+
 #include "../rnd.h"
-#include "rndres.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -208,7 +208,8 @@ VOID DS6_RndShdFree( INT ProgId )
 
 /* Shadre stock array and it size */
 
-ds6SHADER DS6_RndShaders[];
+ds6SHADER DS6_RndShaders[DS6_MAX_SHADERS];
+INT DS6_RndShadersSize;
 
 /* Shader stock initialization function.
  * ARGUMENTS: None.
@@ -216,7 +217,7 @@ ds6SHADER DS6_RndShaders[];
  */
 VOID DS6_RndShadersInit( VOID )
 {
-  //DS6_RndShadersSize = 0;
+  DS6_RndShadersSize = 0;
   DS6_RndShaderAdd("DEFAULT");
 } /* End of 'DS6_RndShadersInit' function */
 
@@ -254,10 +255,11 @@ INT DS6_RndShaderAdd( CHAR *FileNamePrefix )
   return DS6_RndShadersSize++;
 } /* End of 'DS6_RndShadersAdd' function */
 
-/* Shader stock update function.
+/*
+ * Shader stock update function.
  * ARGUMENTS: None.
  * RETURNS: None.
- */
+*/
 VOID DS6_RndShadersUpdate( VOID )
 {
   INT i;
@@ -269,4 +271,4 @@ VOID DS6_RndShadersUpdate( VOID )
   }
 } /* End of 'DS6_RndShadersUpdate' function */
 
-/* END OF 'rndshd.c' FILE */
+/* END OF 'normal life be like forewer' FILE */

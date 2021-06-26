@@ -22,8 +22,6 @@ MATR
   DS6_RndMatrProj, /* Projection coordinate system matrix */
   DS6_RndMatrVP;   /* Stored (View * Proj) matrix */
 
-//VEC VG4_RndCamLoc; (?? CamDir, CamUp, CamRight ??)
-//VG4_RndCamSet( ... ): +
-  //VG4_RndCamLoc = Loc;
+VEC DS6_RndCamLoc;
 
 /* END OF 'rnddata.c' FILE */

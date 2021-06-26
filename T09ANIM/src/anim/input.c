@@ -13,7 +13,7 @@
 #pragma comment(lib, "winmm")
 
 #define DS6_GET_JOYSTIC_AXIS(A) \
-  (2.0 * (ji.dw ## A ## pos - jc.w ## A ## min) / (jc.w ## A ## min) - 1)
+  (2.0 * (ji.dw ## A ## pos - jc.w ## A ## min) / (jc.w ## A ## max - jc.w ## A ## min) - 1)
 
 INT DS6_MouseWheel;
 
@@ -97,17 +97,51 @@ static VOID DS6_AnimJoystickInit( VOID )
 }
 static VOID DS6_AnimJoysstickResponse( VOID )
 {
-  
+  INT i;
+
+  /* Joystick */
+  if (joyGetNumDevs() > 0)
+  {
+    JOYCAPS jc;
+
+    /* Get joystick info */
+    if (joyGetDevCaps(JOYSTICKID1, &jc, sizeof(jc)) == JOYERR_NOERROR)
+    {
+      JOYINFOEX ji;
+
+      ji.dwSize = sizeof(JOYINFOEX);
+      ji.dwFlags = JOY_RETURNALL;
+      if (joyGetPosEx(JOYSTICKID1, &ji) == JOYERR_NOERROR)
+      {
+        /* Buttons */
+        for (i = 0; i < 32; i++)
+        {
+          DS6_Anim.JBut[i] = (ji.dwButtons >> i) & 1;
+          DS6_Anim.JButClick[i] = DS6_Anim.JBut[i] && !DS6_Anim.JButOld[i];
+          DS6_Anim.JButOld[i] = DS6_Anim.JBut[i];
+        }
+        /* Axes */
+        DS6_Anim.JX = DS6_GET_JOYSTIC_AXIS(X);
+        DS6_Anim.JY = DS6_GET_JOYSTIC_AXIS(Y);
+        DS6_Anim.JZ = DS6_GET_JOYSTIC_AXIS(Z);
+        DS6_Anim.JR = DS6_GET_JOYSTIC_AXIS(R);
+        /* Point of view */
+        DS6_Anim.JPov = ji.dwPOV == 0xFFFF ? -1 : ji.dwPOV / 4500;
+      }
+    }
+  }
 }
 
 
 VOID DS6_AnimInputInit( VOID )
 {
-  VOID DS6_AnimKeyboardInit( VOID );
-  VOID DS6_AnimMouseInit( VOID );
+  DS6_AnimKeyboardInit();
+  DS6_AnimMouseInit();
+  DS6_AnimJoystickInit();
 }
 VOID DS6_AnimInputResponse( VOID )
 {
-  VOID DS6_AnimKeyboardResponse( VOID );
-  VOID DS6_AnimMouseResponse( VOID );
+  DS6_AnimKeyboardResponse();
+  DS6_AnimMouseResponse();
+  DS6_AnimJoysstickResponse();
 }

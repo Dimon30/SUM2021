@@ -11,8 +11,9 @@
 #pragma comment(lib, "opengl32")
 
 
-VOID DS6_hRndCamSet( VEC Loc, VEC At, VEC Up1 )
+VOID DS6_RndCamSet( VEC Loc, VEC At, VEC Up1 )
 {
+  DS6_RndCamLoc = Loc;
   DS6_RndMatrView = MatrView(Loc, At, Up1);
   DS6_RndMatrVP = MatrMulMatr(DS6_RndMatrView, DS6_RndMatrProj);
 }
@@ -85,7 +86,7 @@ VOID DS6_RndInit( HWND hWnd )
   /* Set default OpenGL parameters */
   glEnable(GL_DEPTH_TEST);
   glClearColor(0.30f, 0.47f, 0.8, 1);
-  DS6_RndShadersInit();
+  DS6_RndResInit();
 
   DS6_RndProjSize = 0.1,
   DS6_RndProjDist = 0.1,
@@ -93,7 +94,7 @@ VOID DS6_RndInit( HWND hWnd )
 
   DS6_RndFrameW = 47;
   DS6_RndFrameH = 47;
-  DS6_hRndCamSet(VecSet(5, 5, 50), VecSet(0, 0, 0), VecSet(0, 1, 0));
+  DS6_RndCamSet(VecSet(5, 5, 50), VecSet(0, 0, 0), VecSet(0, 1, 0));
 }
 
 VOID DS6_RndClose( VOID )

@@ -252,6 +252,10 @@
 							>
 						</File>
 						<File
+							RelativePath=".\src\anim\rnd\res\rndres.c"
+							>
+						</File>
+						<File
 							RelativePath=".\src\anim\rnd\res\rndres.h"
 							>
 						</File>
@@ -282,7 +286,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\src\anim\u_ctrl.c"
+					RelativePath=".\src\units\u_ctrl.c"
 					>
 				</File>
 				<File
