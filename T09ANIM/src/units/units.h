@@ -15,7 +15,9 @@
  * RETURNS: 
      (ds6UNIT *) pointer to created unit.
  */
-ds6UNIT * DS6_UnitCreateCow( VOID );
+ds6UNIT * DS6_UnitCreateSpyro( VOID );
+
+ds6UNIT * DS6_UnitCreateFireBall( VOID );
 
 /*
  * Unit creation function.
@@ -25,7 +27,7 @@ ds6UNIT * DS6_UnitCreateCow( VOID );
  */
 ds6UNIT * DS6_UnitCreateControl( VOID );
 
-//VOID DS6_RndPrimsFree( ds6PRIMS *Prs );
+
 #endif /* __units_h_ */
 
 /* END OF 'units.h' FILE */

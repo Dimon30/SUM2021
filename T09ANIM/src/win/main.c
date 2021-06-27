@@ -64,7 +64,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine,
   ShowWindow(hWnd, CmdShow);
 
   /******/
-  DS6_AnimUnitAdd(DS6_UnitCreateCow());
+  DS6_AnimUnitAdd(DS6_UnitCreateSpyro());
   DS6_AnimUnitAdd(DS6_UnitCreateControl());
   /* Message loop */
   while (TRUE)

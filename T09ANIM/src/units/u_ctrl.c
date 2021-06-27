@@ -4,20 +4,22 @@
 typedef struct tagds6UNIT_CONTROL
 {
   DS6_UNIT_BASE_FIELDS;
-  DBL CamDist, RotX, RotY;
+  DBL CamDist, RotX, RotY, RotEl, RotAz;
 }ds6UNIT_CONTROL;
 
 static VOID DS6_UnitInit( ds6UNIT_CONTROL *Uni, ds6ANIM *Ani )
 {
   Uni->CamDist = 75;
-  Uni->RotX = -D2R(45);
-  Uni->RotY = D2R(45);
+  Uni->RotX = -D2R(0);
+  Uni->RotY = D2R(0);
 }
 
 static VOID DS6_UnitResponse( ds6UNIT_CONTROL *Uni, ds6ANIM *Ani )
 {
-  //VEC Loc = PointTransform(DS6_RndCamLoc, MatrMulMatr(MatrRotateX(-18 / 2.0 * Uni->RotX), MatrRotateY(-102 / 8.0 * Uni->RotY)));
-  //VEC Dir = VecSubVec(VecSet1(0), Loc);
+  VEC Loc;
+  VEC Dir;
+  VEC a;
+
   /*
   if(Ani->KeysClick[VK_RETURN] && Ani->Keys[VK_MENU])
     DS6_AnimFlipFullScreen();
@@ -28,22 +30,35 @@ static VOID DS6_UnitResponse( ds6UNIT_CONTROL *Uni, ds6ANIM *Ani )
   if(Ani->Keys[VK_ESCAPE])
     DS6_AnimDoExit();
   */
-  /*Uni->RotX += Ani->Mdy * Ani->GlobalDeltaTime * Ani->Keys[VK_LBUTTON];*/
-  /* Uni->RotY += Ani->Mdx * Ani->GlobalDeltaTime * Ani->Keys[VK_LBUTTON];*/
-  Uni->RotX += Ani->JZ * Ani->GlobalDeltaTime * -3.5;
-  Uni->RotY += Ani->JR * Ani->GlobalDeltaTime * -3.5;
-  /*if (Ani->JBut[5] > 0)
-    Loc = VecAddVec(Loc, VecMulNum(Dir, Ani->GlobalDeltaTime));
+
+  Uni->RotEl += Ani->Mdy * Ani->GlobalDeltaTime;
+  Uni->RotAz += Ani->Mdx * Ani->GlobalDeltaTime;
+  Uni->RotX += Ani->JZ * Ani->GlobalDeltaTime * -75.0;
+  Uni->RotY += Ani->JR * Ani->GlobalDeltaTime * -75.0;
+  if (Ani->JBut[5] > 0)
+  {
+    Loc = VecSet(0, 0, Uni->CamDist);
+    Dir = VecSubVec(VecSet1(0), Loc);
+    a = VecSubVec(Dir, VecMulNum(VecNormalize(Dir), Ani->GlobalDeltaTime));
+    DS6_RndCamSet(PointTransform(VecSet(0, 0, Uni->CamDist), MatrTranslate(a)), VecSet1(0), VecSet(0, 1, 0));
+  }
   if (Ani->JBut[4] > 0)
-    Loc = VecSubVec(Loc, VecMulNum(Dir, Ani->GlobalDeltaTime));
-  */
-  //Uni->CamDist += Ani->Mdz * Ani->GlobalDeltaTime;
-  DS6_RndCamSet(PointTransform(VecSet(0, 0, Uni->CamDist), MatrMulMatr(MatrRotateX(-18 / 2.0 * Uni->RotX), MatrRotateY(-102 / 8.0 * Uni->RotY))), VecSet1(0), VecSet(0, 1, 0));
-  //DS6_RndCamSet(Loc, VecSet1(0), VecSet(0, 1, 0));
+  {
+    Loc = VecSet(0, 0, Uni->CamDist);
+    Dir = VecSubVec(VecSet1(0), Loc);
+    Dir = VecAddVec(Dir, VecMulNum(VecNormalize(Dir), Ani->GlobalDeltaTime));
+    DS6_RndCamSet(PointTransform(VecSet(0, 0, Uni->CamDist), MatrMulMatr(MatrScale(VecSet1(Ani->GlobalDeltaTime)), MatrTranslate(Dir))), VecSet1(0), VecSet(0, 1, 0));
+  }
 
-  //DS6_RndCamLoc.X += Ani->GlobalDeltaTime * Ani->JX * 30;
 
-  //DS6_RndCamSet(DS6_RndCamLoc, VecSet(0, 0, 0), VecSet(0, 1, 0));
+  DS6_RndCamSet(PointTransform(VecSet(0, 0, Uni->CamDist), MatrMulMatr(MatrRotateX(Uni->RotX), MatrRotateY( Uni->RotY))), VecSet1(0), VecSet(0, 1, 0));
+  DS6_RndCamSet(VecMulMatr(VecSet(0, 0, Uni->CamDist), MatrMulMatr3(MatrRotateX(Uni->RotEl), MatrRotateY(Uni->RotAz), MatrTranslate(VecSet1(0))), VecSet1(0), VecSet(0, 1, 0));
+  //  DS6_RndCamSet(Loc, VecSet1(0), VecSet(0, 1, 0));
+  if (Ani->JButClick[3] > 0)
+  {
+    DS6_AnimUnitAdd(DS6_UnitCreateFireBall());
+  }
+
 }
 
 /*

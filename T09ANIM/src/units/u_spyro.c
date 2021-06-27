@@ -10,8 +10,8 @@
 typedef struct
 {
   DS6_UNIT_BASE_FIELDS;
-  ds6PRIMS Cow;
-} ds6UNIT_COW;
+  ds6PRIMS Spyro;
+} ds6UNIT_SPYRO;
 
 /*
  * Unit initialization function.
@@ -22,9 +22,9 @@ typedef struct
  *      ds6ANIM *Ani;
  * RETURNS: None.
  */
-static VOID DS6_UnitInit( ds6UNIT_COW *Uni, ds6ANIM *Ani )
+static VOID DS6_UnitInit( ds6UNIT_SPYRO *Uni, ds6ANIM *Ani )
 {
-  DS6_RndPrimsLoad(&Uni->Cow, "BIN/MODELS/a.g3dm");
+  DS6_RndPrimsLoad(&Uni->Spyro, "BIN/MODELS/a.g3dm");
 
 } /* End of 'DS6_UnitInit' function */
 
@@ -37,9 +37,9 @@ static VOID DS6_UnitInit( ds6UNIT_COW *Uni, ds6ANIM *Ani )
  *      ds6ANIM *Ani;
  * RETURNS: None.
  */
-static VOID DS6_UnitClose( ds6UNIT_COW *Uni, ds6ANIM *Ani )
+static VOID DS6_UnitClose( ds6UNIT_SPYRO *Uni, ds6ANIM *Ani )
 {
-  DS6_RndPrimsFree(&Uni->Cow);
+  DS6_RndPrimsFree(&Uni->Spyro);
 } /* End of 'DS6_UnitClose' function */
 
 /*
@@ -51,7 +51,7 @@ static VOID DS6_UnitClose( ds6UNIT_COW *Uni, ds6ANIM *Ani )
  *      ds6ANIM *Ani;
  * RETURNS: None.
  */
-static VOID DS6_UnitResponse( ds6UNIT_COW *Uni, ds6ANIM *Ani )
+static VOID DS6_UnitResponse( ds6UNIT_SPYRO *Uni, ds6ANIM *Ani )
 {
 
 
@@ -66,9 +66,9 @@ static VOID DS6_UnitResponse( ds6UNIT_COW *Uni, ds6ANIM *Ani )
  *      ds6ANIM *Ani;
  * RETURNS: None.
  */
-static VOID DS6_UnitRender( ds6UNIT_COW *Uni, ds6ANIM *Ani )
+static VOID DS6_UnitRender( ds6UNIT_SPYRO *Uni, ds6ANIM *Ani )
 {
-  DS6_RndPrimsDraw(&Uni->Cow, MatrIdentity());
+  DS6_RndPrimsDraw(&Uni->Spyro, MatrIdentity());
 } /* End of 'DS6_UnitRender' function */
 
 /*
@@ -77,11 +77,11 @@ static VOID DS6_UnitRender( ds6UNIT_COW *Uni, ds6ANIM *Ani )
  * RETURNS: 
      (ds6UNIT *) pointer to created unit.
 */
-ds6UNIT * DS6_UnitCreateCow( VOID )
+ds6UNIT * DS6_UnitCreateSpyro( VOID )
 {
   ds6UNIT *Uni;
 
-  if ((Uni = DS6_AnimUnitCreate(sizeof(ds6UNIT_COW))) == NULL)
+  if ((Uni = DS6_AnimUnitCreate(sizeof(ds6UNIT_SPYRO))) == NULL)
     return NULL;
 
   /* Setup unit methods */
